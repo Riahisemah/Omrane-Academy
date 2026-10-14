@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
 import { AlertTriangle } from 'lucide-react'
 import { PageHero } from './PageHero'
+import { useI18n } from '../i18n/context'
 
 /** Shared layout for legal pages: readable measure, notice about placeholders. */
 export function LegalLayout({ crumb, title, intro, children }: { crumb: string; title: string; intro: ReactNode; children: ReactNode }) {
+  const { t } = useI18n()
   return (
     <>
       <PageHero crumb={crumb} title={title} intro={intro} />
@@ -12,12 +14,10 @@ export function LegalLayout({ crumb, title, intro, children }: { crumb: string; 
           <aside className="mb-12 flex gap-3 rounded-xl border border-gold-deep/30 bg-gold-wash p-5 text-[0.95rem] text-[#5e4207]">
             <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
             <p>
-              <strong>Document provisoire.</strong> Les éléments signalés « À compléter » doivent être renseignés avec
-              des informations vérifiées. Ce texte est un modèle : il ne garantit pas, à lui seul, la conformité du site
-              à la réglementation applicable et devrait être relu par un professionnel du droit.
+              <strong>{t.legal.noticeTitle}</strong> {t.legal.notice}
             </p>
           </aside>
-          <div className="legal-prose space-y-12">{children}</div>
+          <div className="space-y-12">{children}</div>
         </div>
       </div>
     </>

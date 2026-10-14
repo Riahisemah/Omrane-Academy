@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import { LocalLink } from './LocalLink'
+import { useI18n } from '../i18n/context'
 
 interface LogoProps {
   tone?: 'dark' | 'light'
@@ -23,12 +24,14 @@ export function LogoMark({ tone = 'dark', className = '' }: { tone?: 'dark' | 'l
 }
 
 export function Logo({ tone = 'dark', onClick }: LogoProps) {
+  const { t } = useI18n()
   return (
-    <Link
+    <LocalLink
       to="/"
       onClick={onClick}
-      className="group inline-flex items-center gap-2.5 rounded-lg"
-      aria-label="Omrane Academy — accueil"
+      className="brand-latin group inline-flex items-center gap-2.5 rounded-lg"
+      aria-label={t.nav.homeAria}
+      dir="ltr"
     >
       <LogoMark tone={tone} className="h-9 w-9 shrink-0" />
       <span
@@ -38,6 +41,6 @@ export function Logo({ tone = 'dark', onClick }: LogoProps) {
       >
         Omrane Academy
       </span>
-    </Link>
+    </LocalLink>
   )
 }

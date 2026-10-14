@@ -1,11 +1,15 @@
 import { useEffect, useId, useRef, useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { Menu, X, MapPin } from 'lucide-react'
 import { Logo } from './Logo'
 import { ButtonLink } from './Button'
-import { locationLabel, navigation } from '../config/site'
+import { LocalNavLink } from './LocalLink'
+import { LanguageSwitcher } from './LanguageSwitcher'
+import { navigation } from '../config/site'
+import { useI18n } from '../i18n/context'
 
 export function Header() {
+  const { t, locationLabel } = useI18n()
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { pathname } = useLocation()
@@ -47,7 +51,7 @@ export function Header() {
   }, [open])
 
   const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `relative py-2 text-[0.95rem] font-medium transition-colors duration-200 after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-gold after:transition-transform after:duration-300 after:origin-left ${
+    `relative py-2 text-[0.95rem] font-medium transition-colors duration-200 after:absolute after:inset-x-0 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-gold after:transition-transform after:duration-300 after:origin-left rtl:after:origin-right ${
       isActive ? 'text-navy after:scale-x-100' : 'text-ink-muted hover:text-navy after:scale-x-0'
     }`
 
@@ -59,40 +63,44 @@ export function Header() {
           : 'border-b border-transparent bg-paper/0'
       }`}
     >
-      <div className="container-page flex h-[4.5rem] items-center justify-between gap-6">
+      <div className="container-page flex h-[4.5rem] items-center justify-between gap-3 lg:gap-6">
         <Logo onClick={() => setOpen(false)} />
 
-        <nav aria-label="Navigation principale" className="hidden lg:block">
+        <nav aria-label={t.nav.mainAria} className="hidden lg:block">
           <ul className="flex items-center gap-9">
             {navigation
               .filter((item) => item.to !== '/contact')
               .map((item) => (
                 <li key={item.to}>
-                  <NavLink to={item.to} className={linkClass}>
-                    {item.label}
-                  </NavLink>
+                  <LocalNavLink to={item.to} className={linkClass}>
+                    {t.nav[item.key]}
+                  </LocalNavLink>
                 </li>
               ))}
           </ul>
         </nav>
 
-        <div className="hidden lg:block">
+        <div className="hidden items-center gap-3 lg:flex">
+          <LanguageSwitcher />
           <ButtonLink to="/contact" className="min-h-11 px-5">
-            Nous contacter
+            {t.nav.cta}
           </ButtonLink>
         </div>
 
-        <button
-          ref={toggleRef}
-          type="button"
-          className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-xl text-navy hover:bg-mist lg:hidden"
-          aria-expanded={open}
-          aria-controls={panelId}
-          aria-label={open ? 'Fermer le menu' : 'Ouvrir le menu'}
-          onClick={() => setOpen((value) => !value)}
-        >
-          {open ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          <LanguageSwitcher compact className="px-3" />
+          <button
+            ref={toggleRef}
+            type="button"
+            className="-me-2 inline-flex h-11 w-11 items-center justify-center rounded-xl text-navy hover:bg-mist"
+            aria-expanded={open}
+            aria-controls={panelId}
+            aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
+            onClick={() => setOpen((value) => !value)}
+          >
+            {open ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
+          </button>
+        </div>
       </div>
 
       {open && (
@@ -101,11 +109,11 @@ export function Header() {
           ref={panelRef}
           className="menu-panel-enter fixed inset-x-0 top-[4.5rem] bottom-0 overflow-y-auto border-t border-line bg-paper lg:hidden"
         >
-          <nav aria-label="Navigation mobile" className="container-page flex min-h-full flex-col pt-6 pb-10">
+          <nav aria-label={t.nav.mobileAria} className="container-page flex min-h-full flex-col pt-6 pb-10">
             <ul className="divide-y divide-line border-b border-line">
-              {[{ to: '/', label: 'Accueil' }, ...navigation].map((item) => (
+              {[{ to: '/', key: 'home' } as const, ...navigation].map((item) => (
                 <li key={item.to}>
-                  <NavLink
+                  <LocalNavLink
                     to={item.to}
                     end
                     className={({ isActive }) =>
@@ -116,17 +124,17 @@ export function Header() {
                   >
                     {({ isActive }) => (
                       <>
-                        {item.label}
+                        {t.nav[item.key]}
                         {isActive && <span className="h-2.5 w-2.5 rounded-full bg-gold" aria-hidden="true" />}
                       </>
                     )}
-                  </NavLink>
+                  </LocalNavLink>
                 </li>
               ))}
             </ul>
             <div className="mt-auto pt-10">
               <ButtonLink to="/contact" className="w-full">
-                Nous contacter
+                {t.nav.cta}
               </ButtonLink>
               <p className="mt-5 flex items-center gap-2 text-sm text-ink-muted">
                 <MapPin className="h-4 w-4 text-blue" aria-hidden="true" />

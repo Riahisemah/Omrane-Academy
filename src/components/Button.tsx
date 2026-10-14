@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { LocalLink } from './LocalLink'
 import { buttonClass, type Variant } from './buttonStyles'
 
 interface ButtonLinkProps {
@@ -11,8 +11,8 @@ interface ButtonLinkProps {
 
 export function ButtonLink({ to, variant = 'primary', children, className = '' }: ButtonLinkProps) {
   return (
-    <Link to={to} className={buttonClass(variant, className)}>
+    <LocalLink to={to} className={buttonClass(variant, className)}>
       {children}
-    </Link>
+    </LocalLink>
   )
 }

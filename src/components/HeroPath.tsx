@@ -14,7 +14,9 @@ interface HeroPathProps {
  * the live layout so it stays attached to both ends at every desktop width.
  */
 export function HeroPath({ container, from, to }: HeroPathProps) {
-  const [geometry, setGeometry] = useState<{ d: string; end: [number, number]; w: number; h: number } | null>(null)
+  const [geometry, setGeometry] = useState<{ d: string; end: [number, number]; w: number; h: number; rtl: boolean } | null>(
+    null,
+  )
 
   useEffect(() => {
     const root = container.current
@@ -30,10 +32,14 @@ export function HeroPath({ container, from, to }: HeroPathProps) {
       const base = root.getBoundingClientRect()
       const s = start.getBoundingClientRect()
       const t = target.getBoundingClientRect()
+      // In right-to-left layouts the hero is mirrored: compute in mirrored
+      // coordinates (x → width − x), then flip the drawing back with CSS.
+      const rtl = getComputedStyle(root).direction === 'rtl'
+      const x = (value: number) => (rtl ? base.right - value : value - base.left)
 
-      const sx = s.left - base.left + s.width / 2
+      const sx = x(s.left + s.width / 2)
       const sy = s.bottom - base.top + 6
-      const left = t.left - base.left
+      const left = rtl ? x(t.right) : x(t.left)
       const top = t.top - base.top
       const bottom = t.bottom - base.top
       const radius = t.width / 2
@@ -57,7 +63,7 @@ export function HeroPath({ container, from, to }: HeroPathProps) {
         `S${ex - 36} ${ey + 70} ${ex} ${ey}`,
       ].join(' ')
 
-      setGeometry({ d, end: [ex, ey], w: base.width, h: base.height })
+      setGeometry({ d, end: [ex, ey], w: base.width, h: base.height, rtl })
     }
 
     measure()
@@ -76,6 +82,7 @@ export function HeroPath({ container, from, to }: HeroPathProps) {
       viewBox={`0 0 ${geometry.w} ${geometry.h}`}
       fill="none"
       className="pointer-events-none absolute inset-0 overflow-visible"
+      style={geometry.rtl ? { transform: 'scaleX(-1)' } : undefined}
     >
       <path
         d={geometry.d}

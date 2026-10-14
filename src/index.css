@@ -22,6 +22,8 @@
 
   --font-sans: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system,
     'Segoe UI', Roboto, sans-serif;
+  /* Arabic pages: IBM Plex Sans Arabic for Arabic glyphs, Plus Jakarta Sans for Latin ones (brand, digits). */
+  --font-arabic: 'IBM Plex Sans Arabic', 'Plus Jakarta Sans Variable', 'Segoe UI', Tahoma, sans-serif;
 
   /* Radii carry hierarchy: images get the large softness, controls stay tighter. */
   --radius-control: 0.75rem;
@@ -119,6 +121,46 @@
   @variant lg {
     padding-inline: 2.5rem;
   }
+}
+
+/* ------------------------------------------------------------------
+   Arabic (RTL). Arabic script is connected: letter-spacing would break the
+   joins, so tracking is reset; taller glyphs and diacritics need more leading.
+   ------------------------------------------------------------------ */
+html[lang='ar'] body {
+  font-family: var(--font-arabic);
+  line-height: 1.8;
+}
+
+html[lang='ar'] body *:not(.brand-latin, .brand-latin *) {
+  letter-spacing: 0 !important;
+}
+
+html[lang='ar'] .brand-latin {
+  font-family: var(--font-sans);
+}
+
+html[lang='ar'] .text-display {
+  font-size: clamp(2.3rem, 1.3rem + 4.4vw, 4.6rem);
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+html[lang='ar'] .text-title {
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+html[lang='ar'] .text-heading {
+  line-height: 1.45;
+}
+
+html[lang='ar'] .text-lead {
+  line-height: 1.85;
+}
+
+html[lang='ar'] .eyebrow {
+  font-size: 0.95rem;
 }
 
 /* Arched frame — the school window / doorway motif. */

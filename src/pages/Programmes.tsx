@@ -4,21 +4,16 @@ import { PageHero } from '../components/PageHero'
 import { CtaBand } from '../components/CtaBand'
 import { ButtonLink } from '../components/Button'
 import { programs } from '../data/content'
+import { useI18n } from '../i18n/context'
 
 export default function Programmes() {
+  const { t } = useI18n()
+  const page = t.programmesPage
   return (
     <>
-      <Seo
-        path="/programmes"
-        title="Programmes : soutien scolaire et initiation à l’informatique"
-        description="Soutien scolaire pour le primaire, le collège et le lycée, et initiation à l’informatique : découvrez les programmes d’Omrane Academy à El Omrane Supérieur, Tunis."
-      />
-      <PageHero
-        crumb="Programmes"
-        title="Des programmes pour chaque étape de la scolarité."
-        intro="Du primaire au lycée, et pour celles et ceux qui souhaitent découvrir l’informatique : voici les accompagnements que propose Omrane Academy à El Omrane Supérieur, Tunis."
-      >
-        <nav aria-label="Aller à un programme" className="mt-10">
+      <Seo path="/programmes" title={page.seoTitle} description={page.seoDescription} />
+      <PageHero crumb={page.crumb} title={page.title} intro={page.intro}>
+        <nav aria-label={page.jumpAria} className="mt-10">
           <ul className="flex flex-wrap gap-2.5">
             {programs.map((program) => (
               <li key={program.id}>
@@ -26,7 +21,7 @@ export default function Programmes() {
                   href={`#${program.id}`}
                   className="inline-flex items-center rounded-full border border-line bg-white px-4 py-2 text-[0.92rem] font-medium text-navy transition-colors hover:border-navy/30"
                 >
-                  {program.level === 'Tous niveaux' ? 'Informatique' : program.level}
+                  {t.programs[program.id].short}
                 </a>
               </li>
             ))}
@@ -36,6 +31,7 @@ export default function Programmes() {
 
       <div className="container-page space-y-24 pb-8 md:space-y-32">
         {programs.map((program, index) => {
+          const text = t.programs[program.id]
           const reversed = index % 2 === 1
           const Icon = program.icon
           return (
@@ -48,12 +44,14 @@ export default function Programmes() {
               <div className={`lg:col-span-6 ${reversed ? 'lg:order-2 lg:col-start-7' : ''}`}>
                 <img
                   src={program.image.src}
-                  alt={program.image.alt}
+                  alt={text.imageAlt}
                   width={program.image.width}
                   height={program.image.height}
                   loading={index === 0 ? 'eager' : 'lazy'}
                   decoding="async"
-                  className={`aspect-[5/4] w-full bg-mist object-cover ${reversed ? 'rounded-[var(--radius-frame)] rounded-tl-[7rem]' : 'rounded-[var(--radius-frame)] rounded-tr-[7rem]'}`}
+                  className={`aspect-[5/4] w-full bg-mist object-cover rounded-[var(--radius-frame)] ${
+                    reversed ? 'rounded-ss-[7rem]' : 'rounded-se-[7rem]'
+                  }`}
                 />
               </div>
               <div className={`lg:col-span-6 ${reversed ? 'lg:order-1' : ''}`}>
@@ -61,15 +59,15 @@ export default function Programmes() {
                   <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-blue ring-1 ring-line">
                     <Icon className="h-5 w-5" aria-hidden="true" />
                   </span>
-                  {program.level}
+                  {text.level}
                 </p>
                 <h2 id={`${program.id}-title`} className="text-title mt-6 max-w-[16ch]">
-                  {program.title}
+                  {text.title}
                 </h2>
-                <p className="text-lead mt-5 max-w-xl text-ink-muted">{program.summary}</p>
-                <h3 className="mt-9 text-[1rem] font-semibold text-navy">Ce que l’accompagnement vise</h3>
+                <p className="text-lead mt-5 max-w-xl text-ink-muted">{text.summary}</p>
+                <h3 className="mt-9 text-[1rem] font-semibold text-navy">{page.aimsTitle}</h3>
                 <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {program.aims.map((aim) => (
+                  {text.aims.map((aim) => (
                     <li key={aim} className="flex gap-3 text-[0.98rem] text-ink">
                       <Check className="mt-1 h-4 w-4 shrink-0 text-gold-deep" strokeWidth={3} aria-hidden="true" />
                       {aim}
@@ -77,7 +75,7 @@ export default function Programmes() {
                   ))}
                 </ul>
                 <ButtonLink to={`/contact?service=${program.id}`} variant="outline" className="mt-10">
-                  Poser une question sur ce programme
+                  {page.ask}
                 </ButtonLink>
               </div>
             </section>
@@ -91,18 +89,13 @@ export default function Programmes() {
           <div className="md:col-span-5">
             <Info className="h-7 w-7 text-blue" aria-hidden="true" />
             <h2 id="pratique-title" className="text-heading mt-4">
-              Matières, horaires et modalités
+              {page.practicalTitle}
             </h2>
           </div>
           <div className="space-y-4 text-ink-muted md:col-span-7">
-            <p>
-              Omrane Academy est un projet en cours de préparation. Les matières proposées, les horaires, le format des
-              séances et les tarifs seront précisés ultérieurement.
-            </p>
-            <p>
-              Pour être informé ou pour partager les besoins de votre enfant, le plus simple est de nous écrire via le
-              formulaire de contact.
-            </p>
+            {page.practical.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
           </div>
         </section>
       </div>

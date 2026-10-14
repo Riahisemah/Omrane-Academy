@@ -2,6 +2,9 @@ import { Suspense, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Header } from './Header'
 import { Footer } from './Footer'
+import { I18nProvider } from '../i18n/I18nProvider'
+import { useI18n } from '../i18n/context'
+import type { Locale } from '../i18n/locale'
 
 /** Scrolls to the top on navigation, or to the #anchor when one is present. */
 function ScrollManager() {
@@ -27,14 +30,15 @@ function ScrollManager() {
   return null
 }
 
-export function Layout() {
+function Shell() {
+  const { t } = useI18n()
   return (
     <>
       <a
         href="#contenu"
-        className="sr-only z-[100] rounded-lg bg-navy px-4 py-3 font-semibold text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+        className="sr-only z-[100] rounded-lg bg-navy px-4 py-3 font-semibold text-white focus:not-sr-only focus:fixed focus:start-3 focus:top-3"
       >
-        Aller au contenu
+        {t.nav.skip}
       </a>
       <ScrollManager />
       <Header />
@@ -45,5 +49,13 @@ export function Layout() {
       </main>
       <Footer />
     </>
+  )
+}
+
+export function Layout({ locale }: { locale: Locale }) {
+  return (
+    <I18nProvider locale={locale}>
+      <Shell />
+    </I18nProvider>
   )
 }

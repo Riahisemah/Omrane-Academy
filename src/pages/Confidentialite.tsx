@@ -1,100 +1,65 @@
-import { Link } from 'react-router-dom'
 import { Seo } from '../components/Seo'
 import { LegalLayout, LegalList, LegalSection } from '../components/LegalLayout'
 import { LegalValue } from '../components/Placeholder'
-import { site } from '../config/site'
+import { LocalLink } from '../components/LocalLink'
+import { useI18n } from '../i18n/context'
 
 export default function Confidentialite() {
+  const { t } = useI18n()
+  const p = t.privacy
   return (
     <>
-      <Seo
-        path="/confidentialite"
-        title="Politique de confidentialité"
-        description="Comment Omrane Academy traite les informations transmises via le formulaire de contact : données collectées, finalité, conservation et droits."
-      />
-      <LegalLayout
-        crumb="Confidentialité"
-        title="Politique de confidentialité"
-        intro="Ce document explique quelles informations sont collectées sur ce site, pourquoi, et comment exercer vos droits."
-      >
-        <LegalSection title="Responsable du traitement">
+      <Seo path="/confidentialite" title={p.seoTitle} description={p.seoDescription} />
+      <LegalLayout crumb={t.footer.privacy} title={p.title} intro={p.intro}>
+        <LegalSection title={p.controllerTitle}>
           <LegalList
             items={[
-              { label: 'Responsable', value: <LegalValue field="legalName" label="raison sociale ou nom du responsable" /> },
-              { label: 'Contact', value: <LegalValue field="privacyContact" label="e-mail ou adresse pour les demandes relatives aux données" /> },
+              { label: p.controller, value: <LegalValue field="legalName" label="controller" /> },
+              { label: p.contact, value: <LegalValue field="privacyContact" label="privacyContact" /> },
             ]}
           />
         </LegalSection>
 
-        <LegalSection title="Données collectées">
-          <p>Le site collecte uniquement les informations que vous saisissez dans le formulaire de contact :</p>
-          <ul className="list-disc space-y-1.5 pl-6">
-            <li>nom et prénom ;</li>
-            <li>numéro de téléphone ;</li>
-            <li>adresse e-mail, si vous choisissez de la renseigner ;</li>
-            <li>niveau scolaire concerné et service souhaité ;</li>
-            <li>le contenu de votre message.</li>
+        <LegalSection title={p.collectedTitle}>
+          <p>{p.collectedIntro}</p>
+          <ul className="list-disc space-y-1.5 ps-6">
+            {p.collected.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
           </ul>
-          <p>
-            Évitez d’indiquer dans votre message des informations sensibles (santé, situation personnelle détaillée)
-            qui ne sont pas nécessaires à votre demande.
-          </p>
+          <p>{p.sensitive}</p>
         </LegalSection>
 
-        <LegalSection title="Finalité">
-          <p>
-            Ces informations servent uniquement à répondre à votre demande et à échanger avec vous au sujet des
-            programmes d’{site.name}. Elles ne sont ni vendues ni utilisées à des fins publicitaires.
-          </p>
+        <LegalSection title={p.purposeTitle}>
+          <p>{p.purpose}</p>
         </LegalSection>
 
-        <LegalSection title="Destinataires et transmission">
-          <p>
-            Les informations sont destinées à l’équipe d’{site.name}. Le site lui-même n’enregistre ni ne transmet
-            rien : lorsque vous validez le formulaire, il prépare un message dans WhatsApp, et c’est vous qui choisissez
-            de l’envoyer depuis votre propre application.
-          </p>
-          <p>
-            Une fois envoyé, le message est transmis par WhatsApp, un service de Meta, et traité selon ses propres
-            conditions et sa politique de confidentialité. Il en va de même si vous nous contactez via notre page
-            Facebook.
-          </p>
-          <LegalList
-            items={[{ label: 'Prestataire d’envoi', value: <LegalValue field="formProvider" label="service utilisé pour recevoir les messages" /> }]}
-          />
+        <LegalSection title={p.recipientsTitle}>
+          {p.recipients.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+          <LegalList items={[{ label: p.provider, value: p.providerValue }]} />
         </LegalSection>
 
-        <LegalSection title="Durée de conservation">
-          <LegalList items={[{ label: 'Durée', value: <LegalValue field="dataRetention" label="durée de conservation" /> }]} />
+        <LegalSection title={p.retentionTitle}>
+          <LegalList items={[{ label: p.retention, value: <LegalValue field="dataRetention" label="dataRetention" /> }]} />
         </LegalSection>
 
-        <LegalSection title="Cookies et mesure d’audience">
-          <p>
-            Dans sa version actuelle, le site n’utilise ni cookie publicitaire ni outil de mesure d’audience. Les
-            polices de caractères sont hébergées sur le site lui-même. Les liens vers WhatsApp, Facebook et Google
-            Maps ouvrent ces services, qui appliquent leurs propres règles en matière de cookies. Si un outil de ce type est ajouté, cette page
-            devra être mise à jour en conséquence.
-          </p>
+        <LegalSection title={p.cookiesTitle}>
+          <p>{p.cookies}</p>
         </LegalSection>
 
-        <LegalSection title="Vos droits">
-          <p>
-            Vous pouvez demander l’accès aux informations vous concernant, leur rectification ou leur suppression, et
-            vous opposer à leur traitement, en écrivant au contact indiqué ci-dessus.
-          </p>
-          <p>
-            En Tunisie, la protection des données personnelles est notamment encadrée par la loi organique n° 2004-63
-            du 27 juillet 2004, sous le contrôle de l’Instance nationale de protection des données personnelles
-            (INPDP). Les obligations applicables au projet (déclaration, autorisations éventuelles) sont à vérifier
-            auprès d’un professionnel ou de l’INPDP.
-          </p>
+        <LegalSection title={p.rightsTitle}>
+          {p.rights.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
         </LegalSection>
 
-        <LegalSection title="Voir aussi">
+        <LegalSection title={p.seeAlso}>
           <p>
-            <Link to="/mentions-legales" className="font-medium text-blue-ink underline underline-offset-2">
-              Mentions légales
-            </Link>
+            <LocalLink to="/mentions-legales" className="font-medium text-blue-ink underline underline-offset-2">
+              {t.mentions.title}
+            </LocalLink>
           </p>
         </LegalSection>
       </LegalLayout>

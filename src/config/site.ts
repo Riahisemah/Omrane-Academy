@@ -1,21 +1,16 @@
 /**
- * Central configuration for Omrane Academy.
+ * Central configuration for Omrane Academy — language-neutral data only.
+ * All visible text lives in src/i18n/messages/{fr,ar}.ts.
  *
  * Only verified information is filled in. Every `null` value is rendered on the
- * site as a clearly marked placeholder ("À compléter") until the real, verified
- * information is provided. Do not replace a null with a guess.
+ * site as a clearly marked placeholder ("À compléter" / "يُستكمل") until the real,
+ * verified information is provided. Do not replace a null with a guess.
  */
 
 export const site = {
   name: 'Omrane Academy',
-  slogan: 'Le chemin vers la réussite',
-  location: {
-    area: 'El Omrane Supérieur',
-    city: 'Tunis',
-    country: 'Tunisie',
-  },
-  /** Production URL without trailing slash (env: VITE_SITE_URL). */
-  url: (import.meta.env.VITE_SITE_URL ?? '').replace(/\/+$/, ''),
+  /** Used for the Google Maps search link. */
+  mapsQuery: 'El Omrane Supérieur, Tunis, Tunisie',
   /** Verified contact channels, provided by the academy. */
   contact: {
     /** WhatsApp number in international format, digits only (used for wa.me links). */
@@ -23,6 +18,8 @@ export const site = {
     whatsappLabel: '+216 26 653 690',
     facebook: 'https://www.facebook.com/profile.php?id=61595131151964',
   },
+  /** Production URL without trailing slash (env: VITE_SITE_URL). */
+  url: (import.meta.env.VITE_SITE_URL ?? '').replace(/\/+$/, ''),
   /** JSON endpoint for the contact form (env: VITE_CONTACT_ENDPOINT). */
   contactEndpoint: import.meta.env.VITE_CONTACT_ENDPOINT ?? '',
   /** 'netlify' = deliver the contact form through Netlify Forms (env: VITE_CONTACT_PROVIDER). */
@@ -49,6 +46,8 @@ export function whatsappUrl(text?: string) {
   return text ? `${base}?text=${encodeURIComponent(text)}` : base
 }
 
+export const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.mapsQuery)}`
+
 /** Business and legal details — to be completed once verified. */
 export const legal: Record<LegalKey, string | null> = {
   legalName: null,
@@ -56,12 +55,9 @@ export const legal: Record<LegalKey, string | null> = {
   fullAddress: null,
   registration: null,
   taxId: null,
-  phone: '+216 26 653 690 (WhatsApp)',
   email: null,
   publicationDirector: null,
   host: null,
-  formProvider:
-    'WhatsApp (Meta) : le formulaire prépare un message que vous envoyez vous-même depuis votre application WhatsApp.',
   dataRetention: null,
   privacyContact: null,
 }
@@ -72,23 +68,16 @@ export type LegalKey =
   | 'fullAddress'
   | 'registration'
   | 'taxId'
-  | 'phone'
   | 'email'
   | 'publicationDirector'
   | 'host'
-  | 'formProvider'
   | 'dataRetention'
   | 'privacyContact'
 
-export const locationLabel = `${site.location.area}, ${site.location.city}`
-
-export const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-  `${site.location.area}, ${site.location.city}, ${site.location.country}`,
-)}`
-
+/** Main navigation: route + dictionary key under `nav`. */
 export const navigation = [
-  { to: '/programmes', label: 'Programmes' },
-  { to: '/approche', label: 'Notre approche' },
-  { to: '/a-propos', label: 'À propos' },
-  { to: '/contact', label: 'Contact' },
+  { to: '/programmes', key: 'programmes' },
+  { to: '/approche', key: 'approach' },
+  { to: '/a-propos', key: 'about' },
+  { to: '/contact', key: 'contact' },
 ] as const

@@ -1,9 +1,12 @@
 import { useId, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
-import { AlertCircle, CheckCircle2, Info, Loader2, Send, ChevronDown, MessageCircle, ArrowUpRight } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
+import { AlertCircle, ArrowUpRight, CheckCircle2, ChevronDown, Info, Loader2, MessageCircle, Send } from 'lucide-react'
 import { contactDelivery, site, whatsappUrl } from '../config/site'
-import { levelOptions, serviceOptions } from '../data/content'
+import { levelValues, serviceValues } from '../data/content'
+import { useI18n } from '../i18n/context'
+import type { Messages } from '../i18n/messages/fr'
 import { buttonClass } from './buttonStyles'
+import { LocalLink } from './LocalLink'
 
 interface FormValues {
   name: string
@@ -19,6 +22,7 @@ interface FormValues {
 type Field = Exclude<keyof FormValues, 'website'>
 type Errors = Partial<Record<Field, string>>
 type Status = 'idle' | 'submitting' | 'success' | 'demo' | 'whatsapp' | 'error'
+type FormText = Messages['form']
 
 const FIELD_ORDER: Field[] = ['name', 'phone', 'email', 'level', 'service', 'message']
 const MESSAGE_MAX = 1000
@@ -30,45 +34,49 @@ const isDemo = contactDelivery === 'demo'
 /** Must match the hidden form declared in index.html (Netlify detects forms at deploy time). */
 const NETLIFY_FORM_NAME = 'contact'
 
-function validate(values: FormValues): Errors {
+function validate(values: FormValues, e: FormText['errors']): Errors {
   const errors: Errors = {}
   const name = values.name.trim()
-  if (!name) errors.name = 'Indiquez votre nom et prénom.'
-  else if (name.length < 3) errors.name = 'Le nom saisi semble incomplet.'
+  if (!name) errors.name = e.nameMissing
+  else if (name.length < 3) errors.name = e.nameShort
 
   const phone = values.phone.replace(/[\s.\-()]/g, '')
-  if (!phone) errors.phone = 'Indiquez un numéro de téléphone pour que nous puissions vous rappeler.'
-  else if (!/^(?:(?:\+|00)216)?\d{8}$/.test(phone) && !/^(?:\+|00)\d{8,15}$/.test(phone))
-    errors.phone = 'Saisissez un numéro valide, par exemple 20 123 456 ou +216 20 123 456.'
+  if (!phone) errors.phone = e.phoneMissing
+  else if (!/^(?:(?:\+|00)216)?\d{8}$/.test(phone) && !/^(?:\+|00)\d{8,15}$/.test(phone)) errors.phone = e.phoneInvalid
 
   const email = values.email.trim()
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email))
-    errors.email = 'Cette adresse e-mail n’est pas valide. Vous pouvez aussi laisser ce champ vide.'
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) errors.email = e.emailInvalid
 
-  if (!values.level) errors.level = 'Choisissez le niveau scolaire concerné.'
-  if (!values.service) errors.service = 'Choisissez le service qui vous intéresse.'
+  if (!values.level) errors.level = e.levelMissing
+  if (!values.service) errors.service = e.serviceMissing
 
   const message = values.message.trim()
-  if (!message) errors.message = 'Décrivez brièvement votre demande.'
-  else if (message.length < 10) errors.message = 'Ajoutez quelques mots de plus pour décrire votre demande.'
-  else if (message.length > MESSAGE_MAX) errors.message = `Le message ne doit pas dépasser ${MESSAGE_MAX} caractères.`
+  if (!message) errors.message = e.messageMissing
+  else if (message.length < 10) errors.message = e.messageShort
+  else if (message.length > MESSAGE_MAX) errors.message = e.messageLong(MESSAGE_MAX)
 
   return errors
 }
 
-/** The pre-filled WhatsApp message built from the form. */
-function whatsappMessage(values: FormValues) {
-  const level = levelOptions.find((o) => o.value === values.level)?.label ?? ''
-  const service = serviceOptions.find((o) => o.value === values.service)?.label ?? ''
+function levelLabel(value: string, f: FormText) {
+  return (levelValues as readonly string[]).includes(value) ? f.levels[value as keyof FormText['levels']] : ''
+}
+
+function serviceLabel(value: string, f: FormText) {
+  return (serviceValues as readonly string[]).includes(value) ? f.services[value as keyof FormText['services']] : ''
+}
+
+/** The pre-filled WhatsApp message, written in the visitor's language. */
+function whatsappMessage(values: FormValues, f: FormText) {
   const lines = [
-    `Bonjour ${site.name},`,
+    f.wa.greeting,
     '',
-    'Nouvelle demande depuis le site :',
-    `- Nom : ${values.name.trim()}`,
-    `- Téléphone : ${values.phone.trim()}`,
-    ...(values.email.trim() ? [`- E-mail : ${values.email.trim()}`] : []),
-    `- Niveau : ${level}`,
-    `- Service : ${service}`,
+    f.wa.intro,
+    `- ${f.wa.name} : ${values.name.trim()}`,
+    `- ${f.wa.phone} : ${values.phone.trim()}`,
+    ...(values.email.trim() ? [`- ${f.wa.email} : ${values.email.trim()}`] : []),
+    `- ${f.wa.level} : ${levelLabel(values.level, f)}`,
+    `- ${f.wa.service} : ${serviceLabel(values.service, f)}`,
     '',
     values.message.trim(),
   ]
@@ -82,10 +90,12 @@ function initialService(param: string | null): string {
 }
 
 function initialLevel(param: string | null): string {
-  return levelOptions.some((option) => option.value === param) ? (param as string) : ''
+  return (levelValues as readonly string[]).includes(param ?? '') ? (param as string) : ''
 }
 
 export function ContactForm() {
+  const { t } = useI18n()
+  const f = t.form
   const [params] = useSearchParams()
   const service = params.get('service')
   const emptyValues: FormValues = {
@@ -110,14 +120,14 @@ export function ContactForm() {
   const update = (field: keyof FormValues) => (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const next = { ...values, [field]: event.target.value }
     setValues(next)
-    if (submitted) setErrors(validate(next))
+    if (submitted) setErrors(validate(next, f.errors))
     if (status === 'error') setStatus('idle')
   }
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setSubmitted(true)
-    const found = validate(values)
+    const found = validate(values, f.errors)
     setErrors(found)
     const firstInvalid = FIELD_ORDER.find((field) => found[field])
     if (firstInvalid) {
@@ -133,7 +143,7 @@ export function ContactForm() {
 
     if (useWhatsApp) {
       // Open WhatsApp synchronously (inside the submit event) so pop-up blockers allow it.
-      const link = whatsappUrl(whatsappMessage(values))
+      const link = whatsappUrl(whatsappMessage(values, f))
       setWaLink(link)
       const opened = window.open(link, '_blank')
       if (opened) opened.opener = null
@@ -158,8 +168,8 @@ export function ContactForm() {
         nom: values.name.trim(),
         telephone: values.phone.trim(),
         email: values.email.trim(),
-        niveau: levelOptions.find((o) => o.value === values.level)?.label ?? '',
-        service: serviceOptions.find((o) => o.value === values.service)?.label ?? '',
+        niveau: levelLabel(values.level, f),
+        service: serviceLabel(values.service, f),
         message: values.message.trim(),
       }
       const response = useNetlifyForms
@@ -188,31 +198,26 @@ export function ContactForm() {
   }
 
   const errorCount = FIELD_ORDER.filter((field) => errors[field]).length
+  const panel =
+    'rounded-[var(--radius-panel)] border border-line bg-white p-8 shadow-[var(--shadow-soft)] outline-none md:p-10'
 
   if (status === 'whatsapp') {
     return (
-      <div
-        ref={statusRef}
-        tabIndex={-1}
-        role="status"
-        className="rounded-[var(--radius-panel)] border border-line bg-white p-8 shadow-[var(--shadow-soft)] outline-none md:p-10"
-      >
+      <div ref={statusRef} tabIndex={-1} role="status" className={panel}>
         <MessageCircle className="h-9 w-9 text-[#1f8a5b]" aria-hidden="true" />
-        <h3 className="text-heading mt-5">Votre message est prêt dans WhatsApp</h3>
+        <h3 className="text-heading mt-5">{f.whatsappReadyTitle}</h3>
         <p className="mt-3 text-ink-muted">
-          WhatsApp s’est ouvert avec votre demande déjà rédigée.{' '}
-          <strong className="text-ink">Appuyez sur « Envoyer » dans WhatsApp</strong> pour nous la transmettre : tant
-          que ce n’est pas fait, nous ne l’avons pas reçue.
+          {f.whatsappReadyText} <strong className="text-ink">{f.whatsappReadyStrong}</strong> {f.whatsappReadyEnd}
         </p>
-        <p className="mt-3 text-[0.95rem] text-ink-muted">WhatsApp ne s’est pas ouvert ? Utilisez le bouton ci-dessous.</p>
+        <p className="mt-3 text-[0.95rem] text-ink-muted">{f.whatsappFallback}</p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <a href={waLink} target="_blank" rel="noopener noreferrer" className={buttonClass('primary')}>
-            Ouvrir WhatsApp
-            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-            <span className="sr-only">(nouvel onglet)</span>
+            {f.openWhatsapp}
+            <ArrowUpRight className="h-4 w-4 rtl:-scale-x-100" aria-hidden="true" />
+            <span className="sr-only">{t.common.newTab}</span>
           </a>
           <button type="button" className={buttonClass('outline')} onClick={() => setStatus('idle')}>
-            Modifier ma demande
+            {f.editRequest}
           </button>
         </div>
       </div>
@@ -222,30 +227,14 @@ export function ContactForm() {
   if (status === 'success' || status === 'demo') {
     const demo = status === 'demo'
     return (
-      <div
-        ref={statusRef}
-        tabIndex={-1}
-        role="status"
-        className="rounded-[var(--radius-panel)] border border-line bg-white p-8 shadow-[var(--shadow-soft)] outline-none md:p-10"
-      >
+      <div ref={statusRef} tabIndex={-1} role="status" className={panel}>
         {demo ? (
           <Info className="h-9 w-9 text-blue" aria-hidden="true" />
         ) : (
           <CheckCircle2 className="h-9 w-9 text-[#1f8a5b]" aria-hidden="true" />
         )}
-        <h3 className="text-heading mt-5">{demo ? 'Formulaire valide — mode démonstration' : 'Demande envoyée'}</h3>
-        {demo ? (
-          <p className="mt-3 text-ink-muted">
-            Votre demande est correctement remplie, mais <strong className="text-ink">elle n’a pas été envoyée</strong> :
-            aucun service d’envoi n’est encore relié à ce formulaire. Les informations saisies n’ont été transmises
-            nulle part.
-          </p>
-        ) : (
-          <p className="mt-3 text-ink-muted">
-            Merci, votre demande a bien été transmise à {site.name}. Nous reviendrons vers vous par téléphone ou par
-            e-mail.
-          </p>
-        )}
+        <h3 className="text-heading mt-5">{demo ? f.demoTitle : f.successTitle}</h3>
+        <p className="mt-3 text-ink-muted">{demo ? f.demoText : f.successText}</p>
         <button
           type="button"
           className={buttonClass('outline', 'mt-8')}
@@ -254,7 +243,7 @@ export function ContactForm() {
             if (!demo) setValues({ ...emptyValues, level: '', service: '' })
           }}
         >
-          {demo ? 'Revenir au formulaire' : 'Envoyer une autre demande'}
+          {demo ? f.backToForm : f.another}
         </button>
       </div>
     )
@@ -265,31 +254,29 @@ export function ContactForm() {
       ref={formRef}
       noValidate
       onSubmit={onSubmit}
-      aria-describedby={isDemo || useWhatsApp ? id('demo') : undefined}
+      aria-describedby={isDemo || useWhatsApp ? id('notice') : undefined}
       className="rounded-[var(--radius-panel)] border border-line bg-white p-6 shadow-[var(--shadow-soft)] sm:p-8 md:p-10"
     >
       {isDemo && (
         <p
-          id={id('demo')}
+          id={id('notice')}
           className="mb-8 flex gap-3 rounded-xl border border-blue/20 bg-blue/[0.06] p-4 text-[0.92rem] leading-relaxed text-ink"
         >
           <Info className="mt-0.5 h-5 w-5 shrink-0 text-blue" aria-hidden="true" />
           <span>
-            <strong>Version de démonstration.</strong> Ce formulaire n’est pas encore relié à un service d’envoi : vous
-            pouvez le tester, mais aucune demande ne sera transmise.
+            <strong>{f.demoNoticeTitle}</strong> {f.demoNotice}
           </span>
         </p>
       )}
 
       {useWhatsApp && (
         <p
-          id={id('demo')}
+          id={id('notice')}
           className="mb-8 flex gap-3 rounded-xl border border-[#1f8a5b]/25 bg-[#1f8a5b]/[0.06] p-4 text-[0.92rem] leading-relaxed text-ink"
         >
           <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-[#1f8a5b]" aria-hidden="true" />
           <span>
-            <strong>Envoi par WhatsApp.</strong> Après validation, WhatsApp s’ouvre avec votre demande déjà rédigée :
-            il vous suffit d’appuyer sur « Envoyer ».
+            <strong>{f.whatsappNoticeTitle}</strong> {f.whatsappNotice}
           </span>
         </p>
       )}
@@ -297,18 +284,14 @@ export function ContactForm() {
       {submitted && errorCount > 0 && (
         <div role="alert" className="mb-8 flex gap-3 rounded-xl border border-[#c2412d]/25 bg-[#c2412d]/[0.06] p-4 text-[0.95rem] text-[#8f2c1d]">
           <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
-          <p>
-            {errorCount === 1 ? 'Un champ est à corriger' : `${errorCount} champs sont à corriger`} avant l’envoi.
-          </p>
+          <p>{f.errors.summary(errorCount)}</p>
         </div>
       )}
 
-      <p className="mb-6 text-[0.88rem] text-ink-muted">
-        Les champs marqués d’un astérisque (<span className="text-[#c2412d]">*</span>) sont obligatoires.
-      </p>
+      <p className="mb-6 text-[0.88rem] text-ink-muted">{f.required}</p>
 
       <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2">
-        <FieldShell id={id('name')} label="Nom et prénom" error={errors.name} className="sm:col-span-2">
+        <FieldShell id={id('name')} label={f.name} error={errors.name} className="sm:col-span-2">
           <input
             id={id('name')}
             name="name"
@@ -320,48 +303,50 @@ export function ContactForm() {
           />
         </FieldShell>
 
-        <FieldShell id={id('phone')} label="Numéro de téléphone" error={errors.phone}>
+        <FieldShell id={id('phone')} label={f.phone} error={errors.phone}>
           <input
             id={id('phone')}
             name="phone"
             type="tel"
             inputMode="tel"
             autoComplete="tel"
+            dir="ltr"
             placeholder="20 123 456"
             value={values.phone}
             onChange={update('phone')}
-            {...fieldProps(id('phone'), errors.phone, true)}
+            {...fieldProps(id('phone'), errors.phone, true, 'rtl:text-right')}
           />
         </FieldShell>
 
-        <FieldShell id={id('email')} label="Adresse e-mail" optional error={errors.email}>
+        <FieldShell id={id('email')} label={f.email} optional={f.optional} error={errors.email}>
           <input
             id={id('email')}
             name="email"
             type="email"
             autoComplete="email"
+            dir="ltr"
             value={values.email}
             onChange={update('email')}
-            {...fieldProps(id('email'), errors.email, false)}
+            {...fieldProps(id('email'), errors.email, false, 'rtl:text-right')}
           />
         </FieldShell>
 
-        <FieldShell id={id('level')} label="Niveau scolaire concerné" error={errors.level}>
+        <FieldShell id={id('level')} label={f.level} error={errors.level}>
           <SelectWrap>
             <select id={id('level')} name="level" value={values.level} onChange={update('level')} {...fieldProps(id('level'), errors.level, true)}>
               <option value="" disabled>
-                Sélectionnez un niveau
+                {f.levelPlaceholder}
               </option>
-              {levelOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
+              {levelValues.map((value) => (
+                <option key={value} value={value}>
+                  {f.levels[value]}
                 </option>
               ))}
             </select>
           </SelectWrap>
         </FieldShell>
 
-        <FieldShell id={id('service')} label="Service souhaité" error={errors.service}>
+        <FieldShell id={id('service')} label={f.service} error={errors.service}>
           <SelectWrap>
             <select
               id={id('service')}
@@ -371,11 +356,11 @@ export function ContactForm() {
               {...fieldProps(id('service'), errors.service, true)}
             >
               <option value="" disabled>
-                Sélectionnez un service
+                {f.servicePlaceholder}
               </option>
-              {serviceOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
+              {serviceValues.map((value) => (
+                <option key={value} value={value}>
+                  {f.services[value]}
                 </option>
               ))}
             </select>
@@ -384,7 +369,7 @@ export function ContactForm() {
 
         <FieldShell
           id={id('message')}
-          label="Message"
+          label={f.message}
           error={errors.message}
           className="sm:col-span-2"
           hint={`${values.message.trim().length} / ${MESSAGE_MAX}`}
@@ -394,17 +379,16 @@ export function ContactForm() {
             name="message"
             rows={5}
             maxLength={MESSAGE_MAX + 200}
-            placeholder="Par exemple : la classe de l’élève, ses besoins, vos questions…"
+            placeholder={f.messagePlaceholder}
             value={values.message}
             onChange={update('message')}
-            {...fieldProps(id('message'), errors.message, true)}
-            className={`${inputClass(Boolean(errors.message))} min-h-36 resize-y`}
+            {...fieldProps(id('message'), errors.message, true, 'min-h-36 resize-y')}
           />
         </FieldShell>
 
         {/* Honeypot: hidden from people and assistive tech. */}
         <div className="hidden" aria-hidden="true">
-          <label htmlFor={id('website')}>Ne pas remplir</label>
+          <label htmlFor={id('website')}>{f.honeypot}</label>
           <input id={id('website')} name="website" tabIndex={-1} autoComplete="off" value={values.website} onChange={update('website')} />
         </div>
       </div>
@@ -417,33 +401,30 @@ export function ContactForm() {
           className="mt-8 flex gap-3 rounded-xl border border-[#c2412d]/25 bg-[#c2412d]/[0.06] p-4 text-[0.95rem] text-[#8f2c1d] outline-none"
         >
           <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true" />
-          <p>
-            L’envoi n’a pas abouti. Vérifiez votre connexion Internet puis réessayez ; vos informations sont
-            conservées dans le formulaire.
-          </p>
+          <p>{f.sendError}</p>
         </div>
       )}
 
       <div className="mt-8 flex flex-col gap-5 border-t border-line pt-8 sm:flex-row sm:items-center sm:justify-between">
         <p className="max-w-sm text-[0.85rem] leading-relaxed text-ink-muted">
-          Vos informations servent uniquement à répondre à votre demande.{' '}
-          <Link to="/confidentialite" className="font-medium text-blue-ink underline underline-offset-2">
-            Politique de confidentialité
-          </Link>
+          {f.privacyNote}{' '}
+          <LocalLink to="/confidentialite" className="font-medium text-blue-ink underline underline-offset-2">
+            {f.privacyLink}
+          </LocalLink>
         </p>
         <button type="submit" className={buttonClass('primary', 'shrink-0')} disabled={status === 'submitting'}>
           {status === 'submitting' ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-              Envoi en cours…
+              {f.submitting}
             </>
           ) : (
             <>
-              Envoyer ma demande
+              {f.submit}
               {useWhatsApp ? (
                 <MessageCircle className="h-4 w-4" aria-hidden="true" />
               ) : (
-                <Send className="h-4 w-4" aria-hidden="true" />
+                <Send className="h-4 w-4 rtl:-scale-x-100" aria-hidden="true" />
               )}
             </>
           )}
@@ -461,20 +442,20 @@ function inputClass(invalid: boolean) {
   }`
 }
 
-function fieldProps(fieldId: string, error: string | undefined, required: boolean) {
+function fieldProps(fieldId: string, error: string | undefined, required: boolean, extraClass = '') {
   return {
     'aria-invalid': error ? true : undefined,
     'aria-describedby': error ? `${fieldId}-error` : undefined,
     'aria-required': required || undefined,
-    className: inputClass(Boolean(error)),
+    className: `${inputClass(Boolean(error))} ${extraClass}`,
   } as const
 }
 
 function SelectWrap({ children }: { children: ReactNode }) {
   return (
-    <div className="relative [&>select]:appearance-none [&>select]:pr-11">
+    <div className="relative [&>select]:appearance-none [&>select]:pe-11">
       {children}
-      <ChevronDown className="pointer-events-none absolute top-1/2 right-4 h-4 w-4 -translate-y-1/2 text-ink-muted" aria-hidden="true" />
+      <ChevronDown className="pointer-events-none absolute end-4 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-muted" aria-hidden="true" />
     </div>
   )
 }
@@ -483,7 +464,8 @@ interface FieldShellProps {
   id: string
   label: string
   error?: string
-  optional?: boolean
+  /** Text shown after the label for optional fields, e.g. "(facultatif)". */
+  optional?: string
   hint?: string
   className?: string
   children: ReactNode
@@ -496,15 +478,15 @@ function FieldShell({ id, label, error, optional, hint, className = '', children
         <label htmlFor={id} className="text-[0.95rem] font-semibold text-navy">
           {label}
           {optional ? (
-            <span className="ml-1.5 font-normal text-ink-muted">(facultatif)</span>
+            <span className="ms-1.5 font-normal text-ink-muted">{optional}</span>
           ) : (
-            <span className="ml-0.5 text-[#c2412d]" aria-hidden="true">
+            <span className="ms-0.5 text-[#c2412d]" aria-hidden="true">
               *
             </span>
           )}
         </label>
         {hint && (
-          <span className="text-xs text-ink-muted tabular-nums" aria-hidden="true">
+          <span className="text-xs text-ink-muted tabular-nums" aria-hidden="true" dir="ltr">
             {hint}
           </span>
         )}
