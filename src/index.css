@@ -1,0 +1,186 @@
+@import '@fontsource-variable/plus-jakarta-sans';
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------
+   Design tokens — Omrane Academy
+   ------------------------------------------------------------------ */
+@theme {
+  --color-navy: #142b4a;
+  --color-navy-deep: #0e2039;
+  --color-navy-soft: #1d3a61;
+  --color-blue: #2878d0;
+  --color-blue-ink: #1d62b0; /* AA-compliant blue for small text on white */
+  --color-gold: #f4b942;
+  --color-gold-deep: #c98d14;
+  --color-gold-wash: #fdf3dc;
+  --color-paper: #f5f8fc;
+  --color-mist: #e8eef7;
+  --color-line: #d9e2ee;
+  --color-ink: #172235;
+  --color-ink-muted: #4a586e;
+  --color-white: #ffffff;
+
+  --font-sans: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system,
+    'Segoe UI', Roboto, sans-serif;
+
+  /* Radii carry hierarchy: images get the large softness, controls stay tighter. */
+  --radius-control: 0.75rem;
+  --radius-panel: 1.5rem;
+  --radius-frame: 2.25rem;
+
+  --shadow-soft: 0 1px 2px rgb(20 43 74 / 0.04), 0 12px 32px -12px rgb(20 43 74 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(20 43 74 / 0.05), 0 24px 48px -20px rgb(20 43 74 / 0.32);
+
+  --ease-path: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--color-navy);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-gold);
+    color: var(--color-navy);
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Typography scale (Bringhurst-ish 1.25 ratio, fluid at the top end)
+   ------------------------------------------------------------------ */
+@utility text-display {
+  font-size: clamp(2.6rem, 1.4rem + 5.2vw, 5.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.038em;
+  font-weight: 750;
+}
+
+@utility text-title {
+  font-size: clamp(2rem, 1.25rem + 3vw, 3.4rem);
+  line-height: 1.06;
+  letter-spacing: -0.032em;
+  font-weight: 720;
+}
+
+@utility text-heading {
+  font-size: clamp(1.45rem, 1.15rem + 1vw, 1.9rem);
+  line-height: 1.18;
+  letter-spacing: -0.022em;
+  font-weight: 700;
+}
+
+@utility text-lead {
+  font-size: clamp(1.125rem, 1.05rem + 0.35vw, 1.3rem);
+  line-height: 1.6;
+}
+
+@utility container-page {
+  width: 100%;
+  max-width: 78rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @variant sm {
+    padding-inline: 1.5rem;
+  }
+  @variant lg {
+    padding-inline: 2.5rem;
+  }
+}
+
+/* Arched frame — the school window / doorway motif. */
+@utility frame-arch {
+  border-radius: 999px 999px var(--radius-frame) var(--radius-frame);
+}
+
+/* ------------------------------------------------------------------
+   The path — drawn once on page load, the single orchestrated motion.
+   ------------------------------------------------------------------ */
+.path-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: path-draw 2.2s var(--ease-path) 0.35s forwards;
+}
+
+.path-dot {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: path-dot 0.6s var(--ease-out-soft) 2.35s forwards;
+}
+
+@keyframes path-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes path-dot {
+  from {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.menu-panel-enter {
+  animation: menu-in 0.32s var(--ease-out-soft);
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
