@@ -54,7 +54,7 @@ export function Seo({ title, description, path, noindex = false }: SeoProps) {
     setMeta('property', 'og:title', fullTitle)
     setMeta('property', 'og:description', description)
     setMeta('property', 'og:locale', t.meta.ogLocale)
-    setMeta('property', 'og:image', `${site.url}/images/og-image.jpg`)
+    setMeta('property', 'og:image', `${site.url}/images/${locale === 'ar' ? 'og-image-ar' : 'og-image'}.jpg`)
     const url = urlFor(locale)
     if (url) setMeta('property', 'og:url', url)
     setLink('canonical', noindex ? null : url)

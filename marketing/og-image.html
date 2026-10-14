@@ -1,0 +1,80 @@
+<!doctype html>
+<!--
+  Link-preview image (WhatsApp, Facebook…), 1200 × 630.
+  French: og-image.html — Arabic: og-image.html#ar
+  Rendered to public/images/og-image.jpg and og-image-ar.jpg.
+-->
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="brand.css" />
+    <style>
+      html, body { width: 1200px; height: 630px; overflow: hidden; background: var(--paper); }
+      .card { position: relative; width: 1200px; height: 630px; padding: 64px 72px; }
+      .brand { display: flex; align-items: center; gap: 14px; }
+      [dir='rtl'] .brand { justify-content: flex-end; }
+      .brand svg { width: 52px; height: 52px; }
+      .brand span { font-size: 30px; font-weight: 800; letter-spacing: -0.03em; color: var(--navy); }
+      h1 { margin-top: 54px; max-width: 600px; font-size: 66px; line-height: 1.04; letter-spacing: -0.04em; font-weight: 760; color: var(--navy); }
+      [lang='ar'] h1 { font-size: 62px; line-height: 1.3; font-weight: 700; margin-top: 44px; }
+      .levels { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 34px; max-width: 600px; }
+      .levels span { padding: 9px 18px; border-radius: 999px; background: #fff; border: 1.5px solid var(--line); font-size: 21px; font-weight: 600; color: var(--navy); }
+      .place { position: absolute; bottom: 58px; inset-inline-start: 72px; display: flex; align-items: center; gap: 12px; font-size: 23px; font-weight: 600; color: var(--navy); }
+      .place i { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: #fff; border: 1.5px solid var(--line); }
+      .photo { position: absolute; top: 56px; inset-inline-end: 72px; width: 400px; height: 574px; }
+      .photo img { width: 100%; height: 100%; box-shadow: 0 30px 60px -30px rgb(20 43 74 / 0.45); }
+      .slogan { position: absolute; bottom: 60px; inset-inline-start: -64px; display: flex; align-items: center; gap: 12px; padding: 14px 22px 14px 14px; background: #fff; border-radius: 18px; box-shadow: 0 20px 40px -18px rgb(20 43 74 / 0.4); font-size: 21px; font-weight: 700; color: var(--navy); white-space: nowrap; }
+      [dir='rtl'] .slogan { padding: 14px 14px 14px 22px; }
+      .slogan b { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--navy); }
+      .path { position: absolute; inset: 0; pointer-events: none; }
+      [dir='rtl'] .path { transform: scaleX(-1); }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <svg class="path" viewBox="0 0 1200 630" fill="none" aria-hidden="true">
+        <path d="M94 552 C 94 600, 300 612, 520 600 S 690 520, 700 420 S 700 170, 760 92" stroke="#F4B942" stroke-width="3.5" stroke-linecap="round" />
+        <circle cx="760" cy="92" r="9" fill="#F4B942" />
+      </svg>
+
+      <div class="brand latin" dir="ltr">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M7 28V14a9 9 0 0 1 18 0v14" fill="none" stroke="#142B4A" stroke-width="2.6" stroke-linecap="round" />
+          <path d="M11.5 28c0-6.5 9-6 9-13" fill="none" stroke="#F4B942" stroke-width="2.6" stroke-linecap="round" />
+        </svg>
+        <span>Omrane Academy</span>
+      </div>
+
+      <h1 data-fr="Chaque élève a le potentiel de réussir." data-ar="كلّ تلميذ قادر على النجاح."></h1>
+
+      <div class="levels" data-list-fr="Primaire|Collège|Lycée|Informatique" data-list-ar="الابتدائي|الإعدادي|الثانوي|الإعلامية"></div>
+
+      <div class="place">
+        <i>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2878D0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg>
+        </i>
+        <span data-fr="El Omrane Supérieur, Tunis" data-ar="العمران الأعلى، تونس العاصمة"></span>
+      </div>
+
+      <div class="photo">
+        <img class="arch" src="../public/images/hero-classe.webp" alt="" />
+        <div class="slogan">
+          <b>
+            <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 28V14a9 9 0 0 1 18 0v14" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" /><path d="M11.5 28c0-6.5 9-6 9-13" fill="none" stroke="#F4B942" stroke-width="2.6" stroke-linecap="round" /></svg>
+          </b>
+          <span data-fr="Le chemin vers la réussite" data-ar="الطريق نحو النجاح"></span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const lang = location.hash === '#ar' ? 'ar' : 'fr'
+      document.documentElement.lang = lang
+      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'
+      document.querySelectorAll('[data-fr]').forEach((el) => (el.textContent = el.dataset[lang]))
+      document.querySelectorAll('[data-list-fr]').forEach((el) => {
+        el.innerHTML = el.dataset[lang === 'ar' ? 'listAr' : 'listFr'].split('|').map((item) => `<span>${item}</span>`).join('')
+      })
+    </script>
+  </body>
+</html>

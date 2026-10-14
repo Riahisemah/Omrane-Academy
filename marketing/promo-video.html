@@ -1,0 +1,274 @@
+<!doctype html>
+<!--
+  Vertical promo video, 1080 × 1920, 25 s (Reels, TikTok, WhatsApp status).
+  French: promo-video.html — Arabic: promo-video.html#ar
+  Every frame is a pure function of time: window.seek(t) draws the frame at t seconds.
+  Open in a browser to preview (plays in a loop). Rendered frame by frame (?render) to video/omrane-academy-promo-{fr,ar}.mp4.
+-->
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="brand.css" />
+    <style>
+      html, body { width: 1080px; height: 1920px; overflow: hidden; background: var(--paper); }
+      .scene { position: absolute; inset: 0; opacity: 0; overflow: hidden; }
+      .dark { background: var(--navy-deep); color: #fff; }
+      .light { background: var(--paper); }
+      .center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+      [lang='ar'] .center { text-align: center; }
+
+      /* 1 — Intro */
+      #s1 .logo { width: 300px; height: 300px; }
+      #s1 .name { margin-top: 48px; font-size: 92px; font-weight: 800; letter-spacing: -0.035em; }
+      #s1 .slogan { margin-top: 22px; font-size: 46px; font-weight: 600; color: var(--gold); }
+      [lang='ar'] #s1 .slogan { font-size: 52px; }
+
+      /* 2 — Hero */
+      #s2 .photo { position: absolute; top: 150px; left: 140px; width: 800px; height: 1040px; border-radius: 999px 999px 40px 40px; overflow: hidden; box-shadow: 0 50px 90px -40px rgb(20 43 74 / 0.55); }
+      #s2 .photo img { width: 100%; height: 100%; object-fit: cover; }
+      #s2 .text { position: absolute; top: 1260px; left: 90px; right: 90px; }
+      .eyebrow { font-size: 30px; font-weight: 700; letter-spacing: 0.12em; color: var(--blue-ink); }
+      [lang='ar'] .eyebrow { font-size: 36px; }
+      #s2 h1 { margin-top: 26px; font-size: 104px; line-height: 1.03; letter-spacing: -0.045em; font-weight: 780; color: var(--navy); }
+      [lang='ar'] #s2 h1 { font-size: 100px; line-height: 1.35; font-weight: 700; }
+      #s2 h1 .w { display: inline-block; }
+
+      /* 3 — Programmes */
+      #s3 .head { position: absolute; top: 150px; left: 90px; right: 90px; }
+      #s3 h2, #s4 h2 { margin-top: 22px; font-size: 80px; line-height: 1.06; letter-spacing: -0.04em; font-weight: 780; color: var(--navy); }
+      [lang='ar'] #s3 h2, [lang='ar'] #s4 h2 { font-size: 76px; line-height: 1.4; font-weight: 700; }
+      #s3 .cards { position: absolute; top: 560px; left: 70px; right: 70px; display: flex; flex-direction: column; gap: 36px; }
+      .card { display: flex; align-items: center; gap: 40px; padding: 30px; background: #fff; border: 2px solid var(--line); border-radius: 36px; box-shadow: 0 30px 60px -36px rgb(20 43 74 / 0.4); }
+      .card img { flex: none; width: 250px; height: 300px; border-radius: 999px 999px 24px 24px; object-fit: cover; }
+      .card .tag { display: inline-block; padding: 8px 20px; border-radius: 999px; background: var(--gold-wash); color: var(--navy); font-size: 26px; font-weight: 700; }
+      .card h3 { margin-top: 16px; font-size: 50px; line-height: 1.08; letter-spacing: -0.03em; font-weight: 760; color: var(--navy); }
+      [lang='ar'] .card h3 { font-size: 50px; line-height: 1.35; font-weight: 700; }
+      .card p { margin-top: 14px; font-size: 29px; line-height: 1.4; color: var(--muted); }
+      [lang='ar'] .card p { font-size: 31px; line-height: 1.6; }
+
+      /* 4 — Approach */
+      #s4 .photo { position: absolute; top: 120px; left: 290px; width: 500px; height: 560px; border-radius: 999px 999px 32px 32px; overflow: hidden; }
+      #s4 .photo img { width: 100%; height: 100%; object-fit: cover; }
+      #s4 .head { position: absolute; top: 740px; left: 90px; right: 90px; text-align: center; }
+      #s4 h2 { color: #fff; }
+      #s4 .eyebrow { color: var(--gold); }
+      #s4 .list { position: absolute; top: 1150px; left: 120px; right: 90px; }
+      [dir='rtl'] #s4 .list { left: 90px; right: 120px; }
+      #s4 .line { position: absolute; top: 40px; bottom: 40px; inset-inline-start: 39px; width: 4px; border-radius: 4px; background: var(--gold); transform-origin: top; }
+      #s4 .item { position: relative; display: flex; align-items: center; gap: 36px; height: 170px; }
+      #s4 .item b { flex: none; display: grid; place-items: center; width: 82px; height: 82px; border-radius: 50%; background: var(--gold); color: var(--navy-deep); font-size: 32px; font-weight: 800; }
+      #s4 .item span { font-size: 54px; font-weight: 700; letter-spacing: -0.025em; }
+      [lang='ar'] #s4 .item span { font-size: 56px; }
+
+      /* 5 — Call to action */
+      #s5 .logo { width: 150px; height: 150px; }
+      #s5 h2 { margin-top: 50px; padding: 0 80px; font-size: 92px; line-height: 1.05; letter-spacing: -0.045em; font-weight: 780; color: var(--navy); }
+      [lang='ar'] #s5 h2 { font-size: 90px; line-height: 1.4; font-weight: 700; }
+      #s5 .levels { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 48px; padding: 0 80px; }
+      #s5 .levels span { padding: 12px 28px; border-radius: 999px; background: #fff; border: 2px solid var(--line); font-size: 32px; font-weight: 650; color: var(--navy); }
+      #s5 .contact { margin-top: 70px; display: flex; align-items: center; gap: 44px; padding: 40px 48px; background: #fff; border-radius: 40px; box-shadow: 0 40px 80px -40px rgb(20 43 74 / 0.45); }
+      #s5 .qr { width: 250px; height: 250px; }
+      #s5 .lines { display: flex; flex-direction: column; gap: 26px; text-align: start; }
+      #s5 .row { display: flex; align-items: center; gap: 18px; font-size: 34px; font-weight: 700; color: var(--navy); }
+      #s5 .row i { flex: none; display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; }
+      #s5 .phone { font-size: 44px; letter-spacing: -0.01em; direction: ltr; unicode-bidi: isolate; }
+      #s5 .ask { margin-top: 56px; font-size: 36px; font-weight: 600; color: var(--muted); }
+
+      .path { position: absolute; inset: 0; pointer-events: none; }
+      [dir='rtl'] .path { transform: scaleX(-1); }
+    </style>
+  </head>
+  <body>
+    <!-- 1 — Intro -->
+    <section class="scene dark center" id="s1">
+      <svg class="logo" viewBox="0 0 32 32" aria-hidden="true">
+        <path class="draw" data-from="0" data-to="1.1" pathLength="1" d="M7 28V14a9 9 0 0 1 18 0v14" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" />
+        <path class="draw" data-from="0.7" data-to="1.6" pathLength="1" d="M11.5 28c0-6.5 9-6 9-13" fill="none" stroke="#F4B942" stroke-width="2.4" stroke-linecap="round" />
+      </svg>
+      <div class="name latin rise" data-at="1.2" dir="ltr">Omrane Academy</div>
+      <div class="slogan rise" data-at="1.6" data-fr="Le chemin vers la réussite" data-ar="الطريق نحو النجاح"></div>
+    </section>
+
+    <!-- 2 — Hero -->
+    <section class="scene light" id="s2">
+      <div class="photo"><img id="heroImg" src="../public/images/hero-classe.webp" alt="" /></div>
+      <div class="text">
+        <div class="eyebrow rise" data-at="4.1" data-fr="ACCOMPAGNEMENT SCOLAIRE & NUMÉRIQUE" data-ar="مرافقة مدرسية ورقمية"></div>
+        <h1 id="heroTitle" data-fr="Chaque élève a le potentiel de réussir." data-ar="كلّ تلميذ قادر على النجاح."></h1>
+      </div>
+    </section>
+
+    <!-- 3 — Programmes -->
+    <section class="scene light" id="s3">
+      <div class="head">
+        <div class="eyebrow rise" data-at="8.6" data-fr="NOS PROGRAMMES" data-ar="برامجنا"></div>
+        <h2 class="rise" data-at="8.8" data-fr="Des solutions pour apprendre et progresser." data-ar="حلول للتعلّم والتقدّم."></h2>
+      </div>
+      <div class="cards">
+        <div class="card slide" data-at="9.6">
+          <img src="../public/images/primaire.webp" alt="" />
+          <div>
+            <span class="tag" data-fr="Primaire" data-ar="الابتدائي"></span>
+            <h3 data-fr="Soutien scolaire" data-ar="دعم مدرسي"></h3>
+            <p data-fr="Construire des bases solides dans les fondamentaux." data-ar="تعلّم الأساسيات وبناء قاعدة متينة."></p>
+          </div>
+        </div>
+        <div class="card slide" data-at="11.2">
+          <img src="../public/images/college-lycee.webp" alt="" />
+          <div>
+            <span class="tag" data-fr="Collège & Lycée" data-ar="الإعدادي والثانوي"></span>
+            <h3 data-fr="Soutien scolaire" data-ar="دعم مدرسي"></h3>
+            <p data-fr="Mieux comprendre les cours et préparer les évaluations." data-ar="فهم الدروس بشكل أفضل والاستعداد للامتحانات."></p>
+          </div>
+        </div>
+        <div class="card slide" data-at="12.8">
+          <img src="../public/images/informatique.webp" alt="" />
+          <div>
+            <span class="tag" data-fr="Numérique" data-ar="رقمي"></span>
+            <h3 data-fr="Initiation à l’informatique" data-ar="مدخل إلى الإعلامية"></h3>
+            <p data-fr="Découvrir les outils numériques et leurs bases." data-ar="اكتشاف الأدوات الرقمية وأساسياتها."></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 — Approach -->
+    <section class="scene dark" id="s4">
+      <div class="photo"><img id="approachImg" src="../public/images/approche.webp" alt="" /></div>
+      <div class="head">
+        <div class="eyebrow rise" data-at="15.3" data-fr="NOTRE APPROCHE" data-ar="منهجنا"></div>
+        <h2 class="rise" data-at="15.5" data-fr="Apprendre à son rythme. Progresser avec confiance." data-ar="التعلّم حسب نسقك. التقدّم بثقة."></h2>
+      </div>
+      <div class="list">
+        <div class="line" id="approachLine"></div>
+        <div class="item rise" data-at="16.4"><b class="latin">01</b><span data-fr="Comprendre avant de mémoriser" data-ar="الفهم قبل الحفظ"></span></div>
+        <div class="item rise" data-at="17.2"><b class="latin">02</b><span data-fr="Un accompagnement adapté" data-ar="مرافقة ملائمة"></span></div>
+        <div class="item rise" data-at="18"><b class="latin">03</b><span data-fr="Développer l’autonomie" data-ar="تنمية الاستقلالية"></span></div>
+      </div>
+    </section>
+
+    <!-- 5 — Call to action -->
+    <section class="scene light center" id="s5">
+      <svg class="path" viewBox="0 0 1080 1920" fill="none" aria-hidden="true">
+        <path class="draw" data-from="20" data-to="22.5" pathLength="1" d="M-20 1820 C 200 1880, 420 1780, 520 1700 S 980 1560, 1100 1500" stroke="#F4B942" stroke-width="5" stroke-linecap="round" />
+      </svg>
+      <svg class="logo rise" data-at="19.9" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M7 28V14a9 9 0 0 1 18 0v14" fill="none" stroke="#142B4A" stroke-width="2.6" stroke-linecap="round" />
+        <path d="M11.5 28c0-6.5 9-6 9-13" fill="none" stroke="#F4B942" stroke-width="2.6" stroke-linecap="round" />
+      </svg>
+      <h2 class="rise" data-at="20.1" data-fr="Préparons ensemble la réussite de demain." data-ar="لنُعِدّ معًا لنجاح الغد."></h2>
+      <div class="levels rise" data-at="20.6" data-list-fr="Primaire|Collège|Lycée|Informatique" data-list-ar="الابتدائي|الإعدادي|الثانوي|الإعلامية"></div>
+      <div class="contact rise" data-at="21.2">
+        <img class="qr" id="qr" alt="" />
+        <div class="lines">
+          <div class="row">
+            <i style="background: #25d366">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-3.3-.8-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.3.3c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.2 1.2z"/></svg>
+            </i>
+            <span class="phone latin">+216 26 653 690</span>
+          </div>
+          <div class="row">
+            <i style="background: #1877f2">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M14 8.5V6.8c0-.8.2-1.3 1.4-1.3H17V2.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.3H8.3v3.6h2.5V22H14v-9.9h2.6l.4-3.6z"/></svg>
+            </i>
+            <span><span class="latin">Omrane Academy</span></span>
+          </div>
+          <div class="row">
+            <i style="background: var(--paper); border: 2px solid var(--line)">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2878D0" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg>
+            </i>
+            <span data-fr="El Omrane Supérieur, Tunis" data-ar="العمران الأعلى، تونس العاصمة"></span>
+          </div>
+        </div>
+      </div>
+      <div class="ask rise" data-at="21.8" data-fr="Écrivez-nous sur WhatsApp" data-ar="راسلونا على واتساب"></div>
+    </section>
+
+    <script>
+      const DURATION = 25
+      const lang = location.hash === '#ar' ? 'ar' : 'fr'
+      document.documentElement.lang = lang
+      document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr'
+      document.querySelectorAll('[data-fr]').forEach((el) => (el.textContent = el.dataset[lang]))
+      document.querySelectorAll('[data-list-fr]').forEach((el) => {
+        el.innerHTML = el.dataset[lang === 'ar' ? 'listAr' : 'listFr'].split('|').map((item) => `<span>${item}</span>`).join('')
+      })
+      document.getElementById('qr').src = `qr/qr-whatsapp-${lang}.svg`
+
+      // Hero headline: one span per word, revealed in turn.
+      const heroTitle = document.getElementById('heroTitle')
+      heroTitle.innerHTML = heroTitle.textContent.split(' ').map((w) => `<span class="w">${w}</span>`).join(' ')
+      const heroWords = [...heroTitle.querySelectorAll('.w')]
+
+      const clamp = (x) => Math.max(0, Math.min(1, x))
+      const easeOut = (x) => 1 - Math.pow(1 - clamp(x), 3)
+      const easeInOut = (x) => ((x = clamp(x)), x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2)
+      const prog = (t, a, b) => easeOut((t - a) / (b - a))
+      const lerp = (a, b, k) => a + (b - a) * k
+
+      // [start, end] of each scene; neighbours overlap for a cross-fade.
+      const scenes = [
+        ['s1', 0, 3.8],
+        ['s2', 3.5, 8.5],
+        ['s3', 8.2, 15.2],
+        ['s4', 14.9, 19.8],
+        ['s5', 19.5, DURATION + 1],
+      ].map(([id, a, b]) => ({ el: document.getElementById(id), a, b }))
+      const FADE = 0.35
+      const rtl = lang === 'ar' ? -1 : 1
+
+      function seek(t) {
+        for (const { el, a, b } of scenes) {
+          const o = Math.min(clamp((t - a) / FADE), clamp((b - t) / FADE))
+          el.style.opacity = a === 0 ? (t < b - FADE ? 1 : o) : o
+          el.style.visibility = o > 0 || (a === 0 && t < b) ? 'visible' : 'hidden'
+          // Gentle push-in on the scene as it leaves.
+          el.style.transform = `scale(${lerp(1, 1.04, clamp((t - (b - FADE)) / FADE))})`
+        }
+        document.querySelectorAll('.draw').forEach((el) => {
+          el.style.strokeDasharray = '1 1'
+          el.style.strokeDashoffset = 1 - easeInOut((t - +el.dataset.from) / (+el.dataset.to - +el.dataset.from))
+        })
+        document.querySelectorAll('.rise').forEach((el) => {
+          const k = prog(t, +el.dataset.at, +el.dataset.at + 0.7)
+          el.style.opacity = k
+          el.style.transform = `translateY(${lerp(50, 0, k)}px)`
+        })
+        document.querySelectorAll('.slide').forEach((el) => {
+          const k = prog(t, +el.dataset.at, +el.dataset.at + 0.8)
+          el.style.opacity = k
+          el.style.transform = `translateX(${lerp(140 * rtl, 0, k)}px)`
+        })
+        heroWords.forEach((w, i) => {
+          const k = prog(t, 4.5 + i * 0.22, 5.2 + i * 0.22)
+          w.style.opacity = k
+          w.style.transform = `translateY(${lerp(60, 0, k)}px)`
+        })
+        // Slow zoom inside the arches.
+        document.getElementById('heroImg').style.transform = `scale(${lerp(1.18, 1, easeOut((t - 3.5) / 5))})`
+        document.getElementById('approachImg').style.transform = `scale(${lerp(1.15, 1, easeOut((t - 14.9) / 5))})`
+        const s2photo = document.querySelector('#s2 .photo')
+        const kp = prog(t, 3.5, 4.4)
+        s2photo.style.opacity = kp
+        s2photo.style.transform = `translateY(${lerp(80, 0, kp)}px)`
+        document.getElementById('approachLine').style.transform = `scaleY(${prog(t, 16.4, 18.6)})`
+      }
+
+      window.seek = seek
+      window.DURATION = DURATION
+      window.ready = Promise.all([document.fonts.ready, ...[...document.images].map((img) => img.decode().catch(() => {}))])
+
+      // Preview mode: play in a loop unless the renderer drives the frames.
+      if (!location.search.includes('render')) {
+        const t0 = performance.now()
+        const tick = (now) => {
+          seek(((now - t0) / 1000) % DURATION)
+          requestAnimationFrame(tick)
+        }
+        requestAnimationFrame(tick)
+      } else {
+        seek(0)
+      }
+    </script>
+  </body>
+</html>

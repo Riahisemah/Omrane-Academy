@@ -1,0 +1,30 @@
+<!doctype html>
+<!--
+  Home-screen icons, rendered at 512 × 512.
+  app-icon.html#rounded → icon-192.png / icon-512.png (rounded square, transparent corners)
+  app-icon.html#full    → apple-touch-icon.png and maskable icon (full bleed: the OS applies its own mask)
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      html, body { margin: 0; width: 512px; height: 512px; background: transparent; }
+      .tile { width: 512px; height: 512px; display: grid; place-items: center; background: #142b4a; }
+      .rounded .tile { border-radius: 112px; }
+      svg { width: 62%; height: 62%; }
+      /* Maskable safe zone: keep the mark inside the central 80 % circle. */
+      .full svg { width: 54%; height: 54%; }
+    </style>
+  </head>
+  <body>
+    <div class="tile">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M7 28V14a9 9 0 0 1 18 0v14" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" />
+        <path d="M11.5 28c0-6.5 9-6 9-13" fill="none" stroke="#F4B942" stroke-width="2.6" stroke-linecap="round" />
+      </svg>
+    </div>
+    <script>
+      document.body.className = location.hash === '#full' ? 'full' : 'rounded'
+    </script>
+  </body>
+</html>

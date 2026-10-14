@@ -115,6 +115,10 @@ function prerenderHeads(outDir: string, base: string) {
         .replace(/(property="og:description"\s+content=")[^"]*"/, (_, start) => `${start}${desc}"`)
         .replace(/(property="og:locale"\s+content=")[^"]*"/, (_, start) => `${start}${m.meta.ogLocale}"`)
         .replace(/(property="og:url"\s+content=")[^"]*"/, (_, start) => `${start}${url}"`)
+        // Branded preview image in the page's language (see marketing/og-image.html).
+        .replace(/(property="og:image"\s+content="[^"]*\/images\/)og-image\.jpg"/, (_, start) =>
+          `${start}${locale === 'ar' ? 'og-image-ar' : 'og-image'}.jpg"`,
+        )
         .replace('</head>', () => (links ? `  ${links}\n  </head>` : '</head>'))
 
       const dir = resolve(outDir, `.${pathFor(path, locale)}`)

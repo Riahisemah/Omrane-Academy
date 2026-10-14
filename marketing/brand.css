@@ -1,0 +1,67 @@
+/* Shared brand base for print and social templates (same fonts and colours as the website). */
+@font-face {
+  font-family: 'Jakarta';
+  src: url('../node_modules/@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2') format('woff2');
+  font-weight: 200 800;
+}
+@font-face {
+  font-family: 'Jakarta';
+  src: url('../node_modules/@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-ext-wght-normal.woff2') format('woff2');
+  font-weight: 200 800;
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'PlexArabic';
+  src: url('../node_modules/@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-arabic-500-normal.woff2') format('woff2');
+  font-weight: 400 500;
+}
+@font-face {
+  font-family: 'PlexArabic';
+  src: url('../node_modules/@fontsource/ibm-plex-sans-arabic/files/ibm-plex-sans-arabic-arabic-700-normal.woff2') format('woff2');
+  font-weight: 600 800;
+}
+
+:root {
+  --navy: #142b4a;
+  --navy-deep: #0e2039;
+  --blue: #2878d0;
+  --blue-ink: #1d62b0;
+  --gold: #f4b942;
+  --gold-wash: #fdf3dc;
+  --paper: #f5f8fc;
+  --line: #d9e2ee;
+  --ink: #172235;
+  --muted: #4a586e;
+  --green: #1f8a5b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  font-family: 'Jakarta', system-ui, sans-serif;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+html[lang='ar'] body,
+[lang='ar'] {
+  font-family: 'PlexArabic', 'Jakarta', sans-serif;
+  letter-spacing: 0 !important;
+}
+
+[lang='ar'] * {
+  letter-spacing: 0 !important;
+}
+
+.latin {
+  font-family: 'Jakarta', sans-serif;
+}
+
+.arch {
+  border-radius: 999px 999px 28px 28px;
+  object-fit: cover;
+  display: block;
+}

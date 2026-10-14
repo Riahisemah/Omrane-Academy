@@ -151,6 +151,25 @@ comme sur le logo. Le sitemap liste les deux versions de chaque page (balises `h
   numéro et page Facebook uniquement. Ajoutez l’adresse précise quand elle sera confirmée.
 - **Images :** chaque photo a une version mobile légère (`*-sm.webp`) choisie automatiquement par le navigateur.
 
+## Supports de communication (`marketing/`)
+
+| Fichier | Usage |
+| --- | --- |
+| `flyer-a5.pdf` | Flyer A5 à imprimer : recto français, verso arabe. Impression « taille réelle », sans marges. |
+| `flyer-fr.png`, `flyer-ar.png` | Le même flyer en image (1080 px) pour WhatsApp, Facebook et les groupes de parents. |
+| `og-image.html` | Modèle de l’image d’aperçu des liens → `public/images/og-image.jpg` (FR) et `og-image-ar.jpg` (AR). |
+| `app-icon.html` | Modèle des icônes d’écran d’accueil → `public/icons/` (+ `public/manifest.webmanifest`). |
+| `qr/` | QR codes du flyer : site (FR/AR) et WhatsApp avec un message « j’ai vu votre flyer ». |
+
+Les modèles HTML utilisent les polices du projet (`npm install` requis) et s’ouvrent dans un navigateur.
+Pour modifier le flyer : éditez `flyer.html`, ouvrez-le dans Chrome ou Edge, puis
+**Imprimer → Enregistrer en PDF**, format A5, marges « Aucune », « Graphiques d’arrière-plan » cochés.
+`flyer.html#fr` ou `#ar` affiche une seule face (pour une capture d’écran).
+
+Si l’adresse du site change (nom de domaine personnalisé), régénérez les QR codes et le flyer.
+Les QR codes déjà imprimés vers `omrane-academy.netlify.app` continueront de fonctionner :
+Netlify redirige cette adresse vers le domaine principal.
+
 ## Structure
 
 ```
