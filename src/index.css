@@ -37,6 +37,8 @@
 
 @layer base {
   html {
+    /* Light-only design: opt out of browsers' automatic dark mode. */
+    color-scheme: only light;
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: 6rem;

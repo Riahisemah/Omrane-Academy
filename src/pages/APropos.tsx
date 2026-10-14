@@ -27,7 +27,7 @@ export default function APropos() {
     <>
       <Seo
         path="/a-propos"
-        title="À propos d’Omrane Academy"
+        title="À propos"
         description="Omrane Academy est un projet de centre éducatif à El Omrane Supérieur, Tunis : soutien scolaire et initiation à l’informatique dans un environnement accueillant."
       />
       <PageHero

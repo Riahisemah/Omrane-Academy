@@ -7,14 +7,22 @@ import { Footer } from './Footer'
 function ScrollManager() {
   const { pathname, hash } = useLocation()
   useEffect(() => {
-    if (hash) {
-      const target = document.getElementById(decodeURIComponent(hash.slice(1)))
-      if (target) {
-        target.scrollIntoView()
-        return
-      }
+    if (!hash) {
+      window.scrollTo(0, 0)
+      return
     }
-    window.scrollTo(0, 0)
+    // Lazy-loaded pages render after this effect: wait (up to ~2 s) for the anchor to exist.
+    const targetId = decodeURIComponent(hash.slice(1))
+    let frame = 0
+    let attempts = 0
+    const tryScroll = () => {
+      const target = document.getElementById(targetId)
+      if (target) target.scrollIntoView()
+      else if (attempts++ < 120) frame = requestAnimationFrame(tryScroll)
+      else window.scrollTo(0, 0)
+    }
+    tryScroll()
+    return () => cancelAnimationFrame(frame)
   }, [pathname, hash])
   return null
 }

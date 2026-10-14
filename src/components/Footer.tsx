@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
 import { Logo } from './Logo'
+import { ContactChannels } from './ContactChannels'
 import { locationLabel, mapsUrl, navigation, site } from '../config/site'
 
 export function Footer() {
@@ -50,12 +51,7 @@ export function Footer() {
               <span className="sr-only"> (ouvre Google Maps dans un nouvel onglet)</span>
             </span>
           </a>
-          <p className="mt-4 text-[0.95rem]">
-            Pour toute question :{' '}
-            <Link to="/contact" className="font-medium text-white underline decoration-gold/60 underline-offset-4 hover:text-gold">
-              formulaire de contact
-            </Link>
-          </p>
+          <ContactChannels tone="light" className="mt-5" />
         </div>
       </div>
 

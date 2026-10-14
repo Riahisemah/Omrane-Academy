@@ -6,6 +6,7 @@ import { ButtonLink } from '../components/Button'
 import { SectionHeading } from '../components/SectionHeading'
 import { CtaBand } from '../components/CtaBand'
 import { ContactForm } from '../components/ContactForm'
+import { ContactChannels } from '../components/ContactChannels'
 import { LogoMark } from '../components/Logo'
 import { HeroPath } from '../components/HeroPath'
 import { homePrograms, principles } from '../data/content'
@@ -340,6 +341,10 @@ function ContactSection() {
                 <span className="sr-only">(ouvre Google Maps dans un nouvel onglet)</span>
               </a>
             </div>
+          </div>
+          <div className="mt-8 border-t border-line pt-8">
+            <p className="font-semibold text-navy">Ou écrivez-nous directement</p>
+            <ContactChannels className="mt-4" />
           </div>
         </div>
         <div className="lg:col-span-7">

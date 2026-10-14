@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#142B4A" />
+    <meta name="color-scheme" content="only light" />
     <title>Omrane Academy — Soutien scolaire et informatique à El Omrane Supérieur, Tunis</title>
     <meta
       name="description"
@@ -18,13 +19,21 @@
       property="og:description"
       content="Soutien scolaire du primaire au lycée et initiation à l’informatique, à El Omrane Supérieur, Tunis."
     />
-    <meta property="og:image" content="/images/og-image.jpg" />
+    <meta property="og:url" content="%VITE_SITE_URL%/" />
+    <meta property="og:image" content="%VITE_SITE_URL%/images/og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <div id="root"></div>
+    <!-- Netlify Forms: static copy of the contact form so Netlify detects it at deploy time.
+         Field names must match the payload sent by src/components/ContactForm.tsx. -->
+    <form name="contact" data-netlify="true" netlify-honeypot="website" hidden>
+      <input name="nom" /><input name="telephone" /><input name="email" />
+      <input name="niveau" /><input name="service" /><textarea name="message"></textarea>
+      <input name="website" />
+    </form>
     <noscript>
       <p style="padding:24px;font-family:sans-serif">
         Omrane Academy — soutien scolaire et initiation à l’informatique à El Omrane Supérieur, Tunis.

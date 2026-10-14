@@ -2,6 +2,7 @@ import { ArrowUpRight, MapPin } from 'lucide-react'
 import { Seo } from '../components/Seo'
 import { PageHero } from '../components/PageHero'
 import { ContactForm } from '../components/ContactForm'
+import { ContactChannels } from '../components/ContactChannels'
 import { locationLabel, mapsUrl, site } from '../config/site'
 
 export default function Contact() {
@@ -44,6 +45,10 @@ export default function Contact() {
                 <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
                 <span className="sr-only">(ouvre Google Maps dans un nouvel onglet)</span>
               </a>
+            </div>
+            <div className="mt-6 rounded-[var(--radius-panel)] border border-line bg-white p-6">
+              <h2 className="text-[1.05rem] font-bold tracking-[-0.01em] text-navy">Nous écrire directement</h2>
+              <ContactChannels className="mt-4" />
             </div>
             <div className="mt-6 space-y-3 px-1 text-[0.95rem] text-ink-muted">
               <p>

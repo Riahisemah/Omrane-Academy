@@ -16,9 +16,38 @@ export const site = {
   },
   /** Production URL without trailing slash (env: VITE_SITE_URL). */
   url: (import.meta.env.VITE_SITE_URL ?? '').replace(/\/+$/, ''),
-  /** JSON endpoint for the contact form (env: VITE_CONTACT_ENDPOINT). Empty = demo mode. */
+  /** Verified contact channels, provided by the academy. */
+  contact: {
+    /** WhatsApp number in international format, digits only (used for wa.me links). */
+    whatsapp: '21626653690',
+    whatsappLabel: '+216 26 653 690',
+    facebook: 'https://www.facebook.com/profile.php?id=61595131151964',
+  },
+  /** JSON endpoint for the contact form (env: VITE_CONTACT_ENDPOINT). */
   contactEndpoint: import.meta.env.VITE_CONTACT_ENDPOINT ?? '',
+  /** 'netlify' = deliver the contact form through Netlify Forms (env: VITE_CONTACT_PROVIDER). */
+  contactProvider: import.meta.env.VITE_CONTACT_PROVIDER === 'netlify' ? 'netlify' : '',
 } as const
+
+/**
+ * How the contact form is delivered, in order of priority:
+ * Netlify Forms, a JSON endpoint, then WhatsApp (the default), or a demo mode if none is set.
+ */
+export type ContactDelivery = 'netlify' | 'endpoint' | 'whatsapp' | 'demo'
+export const contactDelivery: ContactDelivery =
+  site.contactProvider === 'netlify'
+    ? 'netlify'
+    : site.contactEndpoint
+      ? 'endpoint'
+      : site.contact.whatsapp
+        ? 'whatsapp'
+        : 'demo'
+
+/** wa.me link, optionally with a pre-filled message. */
+export function whatsappUrl(text?: string) {
+  const base = `https://wa.me/${site.contact.whatsapp}`
+  return text ? `${base}?text=${encodeURIComponent(text)}` : base
+}
 
 /** Business and legal details — to be completed once verified. */
 export const legal: Record<LegalKey, string | null> = {
@@ -27,11 +56,12 @@ export const legal: Record<LegalKey, string | null> = {
   fullAddress: null,
   registration: null,
   taxId: null,
-  phone: null,
+  phone: '+216 26 653 690 (WhatsApp)',
   email: null,
   publicationDirector: null,
   host: null,
-  formProvider: null,
+  formProvider:
+    'WhatsApp (Meta) : le formulaire prépare un message que vous envoyez vous-même depuis votre application WhatsApp.',
   dataRetention: null,
   privacyContact: null,
 }

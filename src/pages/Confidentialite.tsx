@@ -50,8 +50,14 @@ export default function Confidentialite() {
 
         <LegalSection title="Destinataires et transmission">
           <p>
-            Les informations sont destinées à l’équipe d’{site.name}. Lorsque le formulaire est relié à un service
-            d’envoi, ce prestataire technique traite les données pour le compte d’{site.name}.
+            Les informations sont destinées à l’équipe d’{site.name}. Le site lui-même n’enregistre ni ne transmet
+            rien : lorsque vous validez le formulaire, il prépare un message dans WhatsApp, et c’est vous qui choisissez
+            de l’envoyer depuis votre propre application.
+          </p>
+          <p>
+            Une fois envoyé, le message est transmis par WhatsApp, un service de Meta, et traité selon ses propres
+            conditions et sa politique de confidentialité. Il en va de même si vous nous contactez via notre page
+            Facebook.
           </p>
           <LegalList
             items={[{ label: 'Prestataire d’envoi', value: <LegalValue field="formProvider" label="service utilisé pour recevoir les messages" /> }]}
@@ -65,7 +71,8 @@ export default function Confidentialite() {
         <LegalSection title="Cookies et mesure d’audience">
           <p>
             Dans sa version actuelle, le site n’utilise ni cookie publicitaire ni outil de mesure d’audience. Les
-            polices de caractères sont hébergées sur le site lui-même. Si un outil de ce type est ajouté, cette page
+            polices de caractères sont hébergées sur le site lui-même. Les liens vers WhatsApp, Facebook et Google
+            Maps ouvrent ces services, qui appliquent leurs propres règles en matière de cookies. Si un outil de ce type est ajouté, cette page
             devra être mise à jour en conséquence.
           </p>
         </LegalSection>

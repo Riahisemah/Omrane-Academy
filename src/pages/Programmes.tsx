@@ -43,7 +43,7 @@ export default function Programmes() {
               key={program.id}
               id={program.id}
               aria-labelledby={`${program.id}-title`}
-              className="grid scroll-mt-28 items-center gap-10 lg:grid-cols-12 lg:gap-16"
+              className="grid items-center gap-10 lg:grid-cols-12 lg:gap-16"
             >
               <div className={`lg:col-span-6 ${reversed ? 'lg:order-2 lg:col-start-7' : ''}`}>
                 <img

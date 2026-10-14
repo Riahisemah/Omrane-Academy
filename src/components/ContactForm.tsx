@@ -1,7 +1,7 @@
 import { useId, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { AlertCircle, CheckCircle2, Info, Loader2, Send, ChevronDown } from 'lucide-react'
-import { site } from '../config/site'
+import { AlertCircle, CheckCircle2, Info, Loader2, Send, ChevronDown, MessageCircle, ArrowUpRight } from 'lucide-react'
+import { contactDelivery, site, whatsappUrl } from '../config/site'
 import { levelOptions, serviceOptions } from '../data/content'
 import { buttonClass } from './buttonStyles'
 
@@ -18,12 +18,17 @@ interface FormValues {
 
 type Field = Exclude<keyof FormValues, 'website'>
 type Errors = Partial<Record<Field, string>>
-type Status = 'idle' | 'submitting' | 'success' | 'demo' | 'error'
+type Status = 'idle' | 'submitting' | 'success' | 'demo' | 'whatsapp' | 'error'
 
 const FIELD_ORDER: Field[] = ['name', 'phone', 'email', 'level', 'service', 'message']
 const MESSAGE_MAX = 1000
 
-const isDemo = !site.contactEndpoint
+const useNetlifyForms = contactDelivery === 'netlify'
+const useWhatsApp = contactDelivery === 'whatsapp'
+const isDemo = contactDelivery === 'demo'
+
+/** Must match the hidden form declared in index.html (Netlify detects forms at deploy time). */
+const NETLIFY_FORM_NAME = 'contact'
 
 function validate(values: FormValues): Errors {
   const errors: Errors = {}
@@ -49,6 +54,25 @@ function validate(values: FormValues): Errors {
   else if (message.length > MESSAGE_MAX) errors.message = `Le message ne doit pas dépasser ${MESSAGE_MAX} caractères.`
 
   return errors
+}
+
+/** The pre-filled WhatsApp message built from the form. */
+function whatsappMessage(values: FormValues) {
+  const level = levelOptions.find((o) => o.value === values.level)?.label ?? ''
+  const service = serviceOptions.find((o) => o.value === values.service)?.label ?? ''
+  const lines = [
+    `Bonjour ${site.name},`,
+    '',
+    'Nouvelle demande depuis le site :',
+    `- Nom : ${values.name.trim()}`,
+    `- Téléphone : ${values.phone.trim()}`,
+    ...(values.email.trim() ? [`- E-mail : ${values.email.trim()}`] : []),
+    `- Niveau : ${level}`,
+    `- Service : ${service}`,
+    '',
+    values.message.trim(),
+  ]
+  return lines.join('\n')
 }
 
 function initialService(param: string | null): string {
@@ -77,6 +101,7 @@ export function ContactForm() {
   const [errors, setErrors] = useState<Errors>({})
   const [submitted, setSubmitted] = useState(false)
   const [status, setStatus] = useState<Status>('idle')
+  const [waLink, setWaLink] = useState('')
   const formRef = useRef<HTMLFormElement>(null)
   const statusRef = useRef<HTMLDivElement>(null)
   const uid = useId()
@@ -106,6 +131,17 @@ export function ContactForm() {
       return
     }
 
+    if (useWhatsApp) {
+      // Open WhatsApp synchronously (inside the submit event) so pop-up blockers allow it.
+      const link = whatsappUrl(whatsappMessage(values))
+      setWaLink(link)
+      const opened = window.open(link, '_blank')
+      if (opened) opened.opener = null
+      setStatus('whatsapp')
+      requestAnimationFrame(() => statusRef.current?.focus())
+      return
+    }
+
     setStatus('submitting')
 
     if (isDemo) {
@@ -118,19 +154,27 @@ export function ContactForm() {
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), 15000)
     try {
-      const response = await fetch(site.contactEndpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({
-          nom: values.name.trim(),
-          telephone: values.phone.trim(),
-          email: values.email.trim() || undefined,
-          niveau: levelOptions.find((o) => o.value === values.level)?.label,
-          service: serviceOptions.find((o) => o.value === values.service)?.label,
-          message: values.message.trim(),
-        }),
-        signal: controller.signal,
-      })
+      const payload = {
+        nom: values.name.trim(),
+        telephone: values.phone.trim(),
+        email: values.email.trim(),
+        niveau: levelOptions.find((o) => o.value === values.level)?.label ?? '',
+        service: serviceOptions.find((o) => o.value === values.service)?.label ?? '',
+        message: values.message.trim(),
+      }
+      const response = useNetlifyForms
+        ? await fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ 'form-name': NETLIFY_FORM_NAME, ...payload }).toString(),
+            signal: controller.signal,
+          })
+        : await fetch(site.contactEndpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ ...payload, email: payload.email || undefined }),
+            signal: controller.signal,
+          })
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
       setStatus('success')
       setValues({ ...emptyValues, level: '', service: '' })
@@ -144,6 +188,36 @@ export function ContactForm() {
   }
 
   const errorCount = FIELD_ORDER.filter((field) => errors[field]).length
+
+  if (status === 'whatsapp') {
+    return (
+      <div
+        ref={statusRef}
+        tabIndex={-1}
+        role="status"
+        className="rounded-[var(--radius-panel)] border border-line bg-white p-8 shadow-[var(--shadow-soft)] outline-none md:p-10"
+      >
+        <MessageCircle className="h-9 w-9 text-[#1f8a5b]" aria-hidden="true" />
+        <h3 className="text-heading mt-5">Votre message est prêt dans WhatsApp</h3>
+        <p className="mt-3 text-ink-muted">
+          WhatsApp s’est ouvert avec votre demande déjà rédigée.{' '}
+          <strong className="text-ink">Appuyez sur « Envoyer » dans WhatsApp</strong> pour nous la transmettre : tant
+          que ce n’est pas fait, nous ne l’avons pas reçue.
+        </p>
+        <p className="mt-3 text-[0.95rem] text-ink-muted">WhatsApp ne s’est pas ouvert ? Utilisez le bouton ci-dessous.</p>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href={waLink} target="_blank" rel="noopener noreferrer" className={buttonClass('primary')}>
+            Ouvrir WhatsApp
+            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            <span className="sr-only">(nouvel onglet)</span>
+          </a>
+          <button type="button" className={buttonClass('outline')} onClick={() => setStatus('idle')}>
+            Modifier ma demande
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   if (status === 'success' || status === 'demo') {
     const demo = status === 'demo'
@@ -191,7 +265,7 @@ export function ContactForm() {
       ref={formRef}
       noValidate
       onSubmit={onSubmit}
-      aria-describedby={isDemo ? id('demo') : undefined}
+      aria-describedby={isDemo || useWhatsApp ? id('demo') : undefined}
       className="rounded-[var(--radius-panel)] border border-line bg-white p-6 shadow-[var(--shadow-soft)] sm:p-8 md:p-10"
     >
       {isDemo && (
@@ -203,6 +277,19 @@ export function ContactForm() {
           <span>
             <strong>Version de démonstration.</strong> Ce formulaire n’est pas encore relié à un service d’envoi : vous
             pouvez le tester, mais aucune demande ne sera transmise.
+          </span>
+        </p>
+      )}
+
+      {useWhatsApp && (
+        <p
+          id={id('demo')}
+          className="mb-8 flex gap-3 rounded-xl border border-[#1f8a5b]/25 bg-[#1f8a5b]/[0.06] p-4 text-[0.92rem] leading-relaxed text-ink"
+        >
+          <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-[#1f8a5b]" aria-hidden="true" />
+          <span>
+            <strong>Envoi par WhatsApp.</strong> Après validation, WhatsApp s’ouvre avec votre demande déjà rédigée :
+            il vous suffit d’appuyer sur « Envoyer ».
           </span>
         </p>
       )}
@@ -353,7 +440,11 @@ export function ContactForm() {
           ) : (
             <>
               Envoyer ma demande
-              <Send className="h-4 w-4" aria-hidden="true" />
+              {useWhatsApp ? (
+                <MessageCircle className="h-4 w-4" aria-hidden="true" />
+              ) : (
+                <Send className="h-4 w-4" aria-hidden="true" />
+              )}
             </>
           )}
         </button>
