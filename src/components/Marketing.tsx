@@ -33,11 +33,11 @@ export function WhatsAppFab() {
       href={whatsappUrl(t.marketing.fabMessage)}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={t.marketing.fabAria}
-      className="fixed end-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 inline-flex h-14 items-center gap-2 rounded-full bg-[#1f8a5b] ps-4 pe-5 font-semibold text-white shadow-[0_12px_32px_-10px_rgb(20_70_45/0.65)] transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-[#1a774e] sm:end-6 sm:bottom-6"
+      className="fixed end-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-40 inline-flex h-14 items-center gap-2 rounded-full bg-whatsapp ps-4 pe-5 font-semibold text-white shadow-[0_12px_32px_-10px_rgb(20_70_45/0.65)] transition-[transform,background-color] duration-200 hover:-translate-y-0.5 hover:bg-whatsapp-deep sm:end-6 sm:bottom-6"
     >
       <MessageCircle className="h-6 w-6" aria-hidden="true" />
       <span>{t.marketing.fabLabel}</span>
+      <span className="sr-only"> — {t.marketing.fabAria}</span>
     </a>
   )
 }

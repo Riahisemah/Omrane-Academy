@@ -445,7 +445,8 @@ export const fr = {
     announceCta: 'Être informé(e) en priorité',
     announceMessage: 'Bonjour Omrane Academy, je souhaite être informé(e) de l’ouverture du centre et de vos programmes.',
     fabLabel: 'WhatsApp',
-    fabAria: 'Nous écrire sur WhatsApp (nouvel onglet)',
+    /** Screen-reader text read after the visible "WhatsApp" label. */
+    fabAria: 'nous écrire (nouvel onglet)',
     fabMessage: 'Bonjour Omrane Academy, je souhaite avoir des informations sur vos programmes.',
     benefitsTitle: 'Pourquoi choisir Omrane Academy ?',
     benefitsIntro: 'Un projet pensé pour les familles d’El Omrane Supérieur et des quartiers voisins.',

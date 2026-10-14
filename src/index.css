@@ -19,6 +19,9 @@
   --color-ink: #172235;
   --color-ink-muted: #4a586e;
   --color-white: #ffffff;
+  /* WhatsApp actions: darker than the brand green so white text passes WCAG AA (5.3:1). */
+  --color-whatsapp: #1a7a50;
+  --color-whatsapp-deep: #14623f;
 
   --font-sans: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system,
     'Segoe UI', Roboto, sans-serif;

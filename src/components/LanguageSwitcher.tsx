@@ -14,13 +14,13 @@ export function LanguageSwitcher({ className = '', compact = false }: { classNam
     <Link
       to={to}
       onClick={() => storeLocale(other)}
-      lang={other}
       hrefLang={other}
-      aria-label={t.meta.switchAria}
       className={`inline-flex min-h-11 items-center gap-2 rounded-[var(--radius-control)] border border-navy/15 px-3.5 text-[0.95rem] font-semibold text-navy transition-colors hover:border-navy/35 hover:bg-white ${className}`}
     >
       <Languages className={`h-4 w-4 text-blue ${compact ? 'hidden min-[400px]:block' : ''}`} aria-hidden="true" />
-      {compact ? t.meta.switchShort : t.meta.switchLabel}
+      {/* The accessible name starts with the visible label (WCAG 2.5.3), then explains it. */}
+      <span lang={other}>{compact ? t.meta.switchShort : t.meta.switchLabel}</span>
+      <span className="sr-only"> — {t.meta.switchAria}</span>
     </Link>
   )
 }

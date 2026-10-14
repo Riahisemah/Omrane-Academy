@@ -204,7 +204,7 @@ export function ContactForm() {
   if (status === 'whatsapp') {
     return (
       <div ref={statusRef} tabIndex={-1} role="status" className={panel}>
-        <MessageCircle className="h-9 w-9 text-[#1f8a5b]" aria-hidden="true" />
+        <MessageCircle className="h-9 w-9 text-whatsapp" aria-hidden="true" />
         <h3 className="text-heading mt-5">{f.whatsappReadyTitle}</h3>
         <p className="mt-3 text-ink-muted">
           {f.whatsappReadyText} <strong className="text-ink">{f.whatsappReadyStrong}</strong> {f.whatsappReadyEnd}
@@ -231,7 +231,7 @@ export function ContactForm() {
         {demo ? (
           <Info className="h-9 w-9 text-blue" aria-hidden="true" />
         ) : (
-          <CheckCircle2 className="h-9 w-9 text-[#1f8a5b]" aria-hidden="true" />
+          <CheckCircle2 className="h-9 w-9 text-whatsapp" aria-hidden="true" />
         )}
         <h3 className="text-heading mt-5">{demo ? f.demoTitle : f.successTitle}</h3>
         <p className="mt-3 text-ink-muted">{demo ? f.demoText : f.successText}</p>
@@ -272,9 +272,9 @@ export function ContactForm() {
       {useWhatsApp && (
         <p
           id={id('notice')}
-          className="mb-8 flex gap-3 rounded-xl border border-[#1f8a5b]/25 bg-[#1f8a5b]/[0.06] p-4 text-[0.92rem] leading-relaxed text-ink"
+          className="mb-8 flex gap-3 rounded-xl border border-whatsapp/25 bg-whatsapp/[0.06] p-4 text-[0.92rem] leading-relaxed text-ink"
         >
-          <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-[#1f8a5b]" aria-hidden="true" />
+          <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-whatsapp" aria-hidden="true" />
           <span>
             <strong>{f.whatsappNoticeTitle}</strong> {f.whatsappNotice}
           </span>

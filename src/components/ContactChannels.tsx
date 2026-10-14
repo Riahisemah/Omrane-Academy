@@ -23,7 +23,7 @@ export function ContactChannels({ tone = 'dark', className = '' }: ContactChanne
       <li>
         <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className={item}>
           <span className={badge}>
-            <MessageCircle className={`h-[18px] w-[18px] ${light ? 'text-gold' : 'text-[#1f8a5b]'}`} aria-hidden="true" />
+            <MessageCircle className={`h-[18px] w-[18px] ${light ? 'text-gold' : 'text-whatsapp'}`} aria-hidden="true" />
           </span>
           <span>
             <span className={caption}>{t.common.whatsapp}</span>

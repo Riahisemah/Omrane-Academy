@@ -268,7 +268,7 @@ function Faq() {
             href={whatsappUrl(m.faqMessage)}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-[var(--radius-control)] bg-[#1f8a5b] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#1a774e]"
+            className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-[var(--radius-control)] bg-whatsapp px-6 py-3 font-semibold text-white transition-colors hover:bg-whatsapp-deep"
           >
             <MessageCircle className="h-5 w-5" aria-hidden="true" />
             {m.faqCta}

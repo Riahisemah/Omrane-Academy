@@ -428,7 +428,7 @@ export const ar: Messages = {
     announceCta: 'كونوا أوّل من يعلم',
     announceMessage: 'مرحبًا Omrane Academy، أرغب في أن أُعلَم بافتتاح المركز وبرامجكم.',
     fabLabel: 'واتساب',
-    fabAria: 'راسلونا على واتساب (نافذة جديدة)',
+    fabAria: 'راسلونا (نافذة جديدة)',
     fabMessage: 'مرحبًا Omrane Academy، أرغب في الحصول على معلومات حول برامجكم.',
     benefitsTitle: 'لماذا تختارون Omrane Academy؟',
     benefitsIntro: 'مشروع مصمَّم لعائلات العمران الأعلى والأحياء المجاورة.',
