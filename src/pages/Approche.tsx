@@ -1,6 +1,7 @@
 import { Seo } from '../components/Seo'
 import { PageHero } from '../components/PageHero'
 import { CtaBand } from '../components/CtaBand'
+import { ResponsiveImage } from '../components/ResponsiveImage'
 import { images, principleIcons } from '../data/content'
 import { useI18n } from '../i18n/context'
 
@@ -38,13 +39,10 @@ export default function Approche() {
       <section aria-labelledby="valeurs-title" className="container-page py-20 md:py-28">
         <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="lg:col-span-5">
-            <img
-              src={images.approche.src}
+            <ResponsiveImage
+              image={images.approche}
               alt={t.home.approach.imageAlt}
-              width={images.approche.width}
-              height={images.approche.height}
-              loading="lazy"
-              decoding="async"
+              sizes="(min-width: 1024px) 40vw, 100vw"
               className="frame-arch aspect-[4/5] w-full bg-mist object-cover"
             />
           </div>

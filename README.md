@@ -136,6 +136,21 @@ TypeScript vérifie que les deux fichiers ont exactement les mêmes clés : un t
 langue empêche le build. Le nom « Omrane Academy » reste en caractères latins dans les deux langues,
 comme sur le logo. Le sitemap liste les deux versions de chaque page (balises `hreflang`).
 
+## Conversion et référencement
+
+- **WhatsApp partout :** bouton flottant sur toutes les pages, barre d’annonce « Être informé(e) en
+  priorité » et bouton dans la FAQ. Chaque lien ouvre WhatsApp avec un message déjà rédigé dans la
+  langue du visiteur (textes dans `marketing` des fichiers de langue).
+- **Sections pour les parents** sur l’accueil : « Pourquoi choisir Omrane Academy ? » et une FAQ.
+  Règle éditoriale : uniquement des informations vraies, sans chiffres, avis ni dates inventés.
+  Quand les matières, horaires ou tarifs seront fixés, mettez à jour la FAQ (`marketing.faq`).
+- **Une page HTML par adresse et par langue** est générée au build (`dist/programmes/index.html`,
+  `dist/ar/programmes/index.html`…), avec son titre, sa description, ses balises Open Graph et `hreflang`.
+  Les aperçus de liens WhatsApp et Facebook affichent donc la bonne page dans la bonne langue.
+- **Données structurées** (JSON-LD `EducationalOrganization`) dans `index.html` : nom, zone,
+  numéro et page Facebook uniquement. Ajoutez l’adresse précise quand elle sera confirmée.
+- **Images :** chaque photo a une version mobile légère (`*-sm.webp`) choisie automatiquement par le navigateur.
+
 ## Structure
 
 ```

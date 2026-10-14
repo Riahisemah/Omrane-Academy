@@ -16,6 +16,9 @@ export function Header() {
   const panelId = useId()
   const toggleRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLDivElement>(null)
+  const headerRef = useRef<HTMLElement>(null)
+  // The menu opens right under the header, wherever it sits (the announcement bar may be above it).
+  const [panelTop, setPanelTop] = useState(72)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -30,6 +33,7 @@ export function Header() {
   // Lock scroll, handle Escape and move focus while the mobile menu is open.
   useEffect(() => {
     if (!open) return
+    setPanelTop(headerRef.current?.getBoundingClientRect().bottom ?? 72)
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     panelRef.current?.querySelector<HTMLElement>('a')?.focus()
@@ -56,7 +60,9 @@ export function Header() {
     }`
 
   return (
+    <>
     <header
+      ref={headerRef}
       className={`sticky top-0 z-50 transition-[background-color,box-shadow,border-color] duration-300 ${
         scrolled || open
           ? 'border-b border-line/80 bg-paper/90 backdrop-blur-md'
@@ -102,12 +108,16 @@ export function Header() {
           </button>
         </div>
       </div>
+    </header>
 
+      {/* Rendered outside <header>: its backdrop-filter would otherwise become the
+          containing block of this fixed panel and collapse it to zero height. */}
       {open && (
         <div
           id={panelId}
           ref={panelRef}
-          className="menu-panel-enter fixed inset-x-0 top-[4.5rem] bottom-0 overflow-y-auto border-t border-line bg-paper lg:hidden"
+          className="menu-panel-enter fixed inset-x-0 bottom-0 z-50 overflow-y-auto border-t border-line bg-paper lg:hidden"
+          style={{ top: panelTop }}
         >
           <nav aria-label={t.nav.mobileAria} className="container-page flex min-h-full flex-col pt-6 pb-10">
             <ul className="divide-y divide-line border-b border-line">
@@ -144,6 +154,6 @@ export function Header() {
           </nav>
         </div>
       )}
-    </header>
+    </>
   )
 }

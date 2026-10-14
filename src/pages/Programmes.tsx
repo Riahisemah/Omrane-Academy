@@ -3,6 +3,7 @@ import { Seo } from '../components/Seo'
 import { PageHero } from '../components/PageHero'
 import { CtaBand } from '../components/CtaBand'
 import { ButtonLink } from '../components/Button'
+import { ResponsiveImage } from '../components/ResponsiveImage'
 import { programs } from '../data/content'
 import { useI18n } from '../i18n/context'
 
@@ -42,13 +43,10 @@ export default function Programmes() {
               className="grid items-center gap-10 lg:grid-cols-12 lg:gap-16"
             >
               <div className={`lg:col-span-6 ${reversed ? 'lg:order-2 lg:col-start-7' : ''}`}>
-                <img
-                  src={program.image.src}
+                <ResponsiveImage
+                  image={program.image}
                   alt={text.imageAlt}
-                  width={program.image.width}
-                  height={program.image.height}
-                  loading={index === 0 ? 'eager' : 'lazy'}
-                  decoding="async"
+                  eager={index === 0}
                   className={`aspect-[5/4] w-full bg-mist object-cover rounded-[var(--radius-frame)] ${
                     reversed ? 'rounded-ss-[7rem]' : 'rounded-se-[7rem]'
                   }`}

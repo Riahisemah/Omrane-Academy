@@ -439,6 +439,62 @@ export const fr = {
     seeAlso: 'Voir aussi',
   },
 
+  /** Parent-facing conversion elements. Every claim stays factual: no figures, reviews or dates. */
+  marketing: {
+    announce: 'Omrane Academy se prépare à El Omrane Supérieur.',
+    announceCta: 'Être informé(e) en priorité',
+    announceMessage: 'Bonjour Omrane Academy, je souhaite être informé(e) de l’ouverture du centre et de vos programmes.',
+    fabLabel: 'WhatsApp',
+    fabAria: 'Nous écrire sur WhatsApp (nouvel onglet)',
+    fabMessage: 'Bonjour Omrane Academy, je souhaite avoir des informations sur vos programmes.',
+    benefitsTitle: 'Pourquoi choisir Omrane Academy ?',
+    benefitsIntro: 'Un projet pensé pour les familles d’El Omrane Supérieur et des quartiers voisins.',
+    benefits: [
+      {
+        title: 'Tout près de chez vous',
+        text: 'Un centre de proximité, au cœur d’El Omrane Supérieur : moins de trajets, plus de temps pour apprendre.',
+      },
+      {
+        title: 'Du primaire au lycée',
+        text: 'Un même lieu pour accompagner vos enfants à chaque étape de leur scolarité, avec l’informatique en plus.',
+      },
+      {
+        title: 'Les parents, partenaires',
+        text: 'Le dialogue avec les familles fait partie de notre approche : mieux connaître l’élève, c’est mieux l’accompagner.',
+      },
+      {
+        title: 'Facile à joindre',
+        text: 'Une question ? Écrivez-nous sur WhatsApp, sur Facebook ou via le formulaire, en français ou en arabe.',
+      },
+    ],
+    faqTitle: 'Les questions des parents',
+    faqIntro: 'Vous ne trouvez pas votre réponse ? Posez-nous directement votre question sur WhatsApp.',
+    faq: [
+      {
+        q: 'Quels niveaux accompagnez-vous ?',
+        a: 'Le soutien scolaire s’adresse aux élèves du primaire, du collège et du lycée. L’initiation à l’informatique est ouverte à tous les niveaux.',
+      },
+      {
+        q: 'Quelles matières seront proposées ?',
+        a: 'Les matières sont en cours de définition. Parlez-nous des besoins de votre enfant : cela nous aide à construire une offre qui y répond.',
+      },
+      {
+        q: 'Quels sont les horaires et les tarifs ?',
+        a: 'Ils ne sont pas encore fixés et seront annoncés avant l’ouverture. Pour les recevoir en priorité, laissez-nous un message sur WhatsApp.',
+      },
+      {
+        q: 'Où se trouve le centre ?',
+        a: 'À El Omrane Supérieur, à Tunis. Pour connaître l’adresse précise, écrivez-nous.',
+      },
+      {
+        q: 'Comment suivre l’avancement du projet ?',
+        a: 'Suivez notre page Facebook ou écrivez-nous sur WhatsApp : nous y partagerons les prochaines étapes.',
+      },
+    ],
+    faqCta: 'Poser ma question sur WhatsApp',
+    faqMessage: 'Bonjour Omrane Academy, j’ai une question : ',
+  },
+
   notFound: {
     seoTitle: 'Page introuvable',
     seoDescription: 'Cette page n’existe pas ou a été déplacée.',

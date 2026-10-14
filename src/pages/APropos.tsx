@@ -2,6 +2,7 @@ import { MapPin, BookOpenText, Laptop, Users } from 'lucide-react'
 import { Seo } from '../components/Seo'
 import { PageHero } from '../components/PageHero'
 import { CtaBand } from '../components/CtaBand'
+import { ResponsiveImage } from '../components/ResponsiveImage'
 import { images } from '../data/content'
 import { mapsUrl } from '../config/site'
 import { useI18n } from '../i18n/context'
@@ -17,12 +18,11 @@ export default function APropos() {
       <PageHero crumb={page.crumb} title={t.home.about.title} intro={t.home.about.text} />
 
       <div className="container-page">
-        <img
-          src={images.classe.src}
+        <ResponsiveImage
+          image={images.classe}
           alt={t.home.about.imageAlt}
-          width={images.classe.width}
-          height={images.classe.height}
-          decoding="async"
+          sizes="(min-width: 1280px) 1168px, 100vw"
+          eager
           className="aspect-[4/3] w-full rounded-[var(--radius-frame)] bg-mist object-cover sm:aspect-[16/8]"
         />
       </div>

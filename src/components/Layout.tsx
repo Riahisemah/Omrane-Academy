@@ -2,6 +2,7 @@ import { Suspense, useEffect } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Header } from './Header'
 import { Footer } from './Footer'
+import { AnnouncementBar, WhatsAppFab } from './Marketing'
 import { I18nProvider } from '../i18n/I18nProvider'
 import { useI18n } from '../i18n/context'
 import type { Locale } from '../i18n/locale'
@@ -41,6 +42,7 @@ function Shell() {
         {t.nav.skip}
       </a>
       <ScrollManager />
+      <AnnouncementBar />
       <Header />
       <main id="contenu" tabIndex={-1} className="outline-none">
         <Suspense fallback={<div className="min-h-[70vh]" aria-busy="true" />}>
@@ -48,6 +50,7 @@ function Shell() {
         </Suspense>
       </main>
       <Footer />
+      <WhatsAppFab />
     </>
   )
 }

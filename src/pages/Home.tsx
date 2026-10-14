@@ -1,5 +1,5 @@
 import { useRef, type ComponentType } from 'react'
-import { ArrowRight, ArrowUpRight, MapPin } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, GraduationCap, HeartHandshake, MapPin, MessageCircle, Plus } from 'lucide-react'
 import { Seo } from '../components/Seo'
 import { ButtonLink } from '../components/Button'
 import { SectionHeading } from '../components/SectionHeading'
@@ -9,8 +9,9 @@ import { ContactChannels } from '../components/ContactChannels'
 import { LogoMark } from '../components/Logo'
 import { HeroPath } from '../components/HeroPath'
 import { LocalLink } from '../components/LocalLink'
+import { ResponsiveImage } from '../components/ResponsiveImage'
 import { images, principleIcons, programs, type ImageAsset, type ServiceId } from '../data/content'
-import { mapsUrl } from '../config/site'
+import { mapsUrl, whatsappUrl } from '../config/site'
 import { useI18n } from '../i18n/context'
 
 type IconType = ComponentType<{ className?: string; 'aria-hidden'?: boolean | 'true' }>
@@ -27,8 +28,10 @@ export default function Home() {
       <Seo path="/" title={t.home.seoTitle} description={t.home.seoDescription} />
       <Hero />
       <Programs />
+      <Benefits />
       <Approach />
       <About />
+      <Faq />
       <CtaBand to="/#contact" />
       <ContactSection />
     </>
@@ -170,13 +173,9 @@ function Programs() {
               </LocalLink>
             </div>
             <div className="order-1 h-full md:order-2">
-              <img
-                src={images.informatique.src}
+              <ResponsiveImage
+                image={images.informatique}
                 alt={t.programs.informatique.imageAlt}
-                width={images.informatique.width}
-                height={images.informatique.height}
-                loading="lazy"
-                decoding="async"
                 className="aspect-[4/3] h-full w-full object-cover md:aspect-auto md:min-h-[26rem]"
               />
             </div>
@@ -192,13 +191,9 @@ function ProgramImage({ to, label, image, alt, aspect }: { to: string; label: st
   return (
     <LocalLink to={to} className="block rounded-[var(--radius-frame)]" aria-label={`${label} — ${t.common.learnMore}`}>
       <div className="overflow-hidden rounded-[var(--radius-frame)] bg-mist">
-        <img
-          src={image.src}
+        <ResponsiveImage
+          image={image}
           alt={alt}
-          width={image.width}
-          height={image.height}
-          loading="lazy"
-          decoding="async"
           className={`${aspect} w-full object-cover transition-transform duration-700 ease-[var(--ease-out-soft)] group-hover:scale-[1.03]`}
         />
       </div>
@@ -230,6 +225,78 @@ function ProgramText({ title, text, to, icon: Icon }: { title: string; text: str
 
 /* ------------------------------------------------------------------ */
 
+const benefitIcons = [MapPin, GraduationCap, HeartHandshake, MessageCircle]
+
+/** Why parents would choose the academy — factual arguments only (place, levels, approach, contact). */
+function Benefits() {
+  const { t } = useI18n()
+  const m = t.marketing
+  return (
+    <section aria-labelledby="benefits-title" className="container-page pb-20 md:pb-28">
+      <div className="border-t border-line pt-16 md:pt-20">
+        <SectionHeading id="benefits-title" title={m.benefitsTitle} intro={m.benefitsIntro} />
+        <ul className="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          {m.benefits.map(({ title, text }, index) => {
+            const Icon = benefitIcons[index]
+            return (
+              <li key={title} className="border-t-2 border-gold pt-6">
+                <Icon className="h-6 w-6 text-blue" aria-hidden="true" />
+                <h3 className="mt-4 text-[1.2rem] leading-snug font-bold tracking-[-0.015em] text-navy">{title}</h3>
+                <p className="mt-2.5 text-ink-muted">{text}</p>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+/** Parents' questions, answered honestly (what is known, and what is not decided yet). */
+function Faq() {
+  const { t } = useI18n()
+  const m = t.marketing
+  return (
+    <section aria-labelledby="faq-title" className="container-page pt-20 md:pt-28">
+      <div className="grid gap-10 border-t border-line pt-16 md:pt-20 lg:grid-cols-12 lg:gap-16">
+        <div className="lg:col-span-5">
+          <h2 id="faq-title" className="text-title max-w-[13ch]">
+            {m.faqTitle}
+          </h2>
+          <p className="text-lead mt-6 max-w-md text-ink-muted">{m.faqIntro}</p>
+          <a
+            href={whatsappUrl(m.faqMessage)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-[var(--radius-control)] bg-[#1f8a5b] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#1a774e]"
+          >
+            <MessageCircle className="h-5 w-5" aria-hidden="true" />
+            {m.faqCta}
+            <span className="sr-only">{t.common.whatsappNewTab}</span>
+          </a>
+        </div>
+        <div className="lg:col-span-7">
+          <div className="divide-y divide-line border-y border-line">
+            {m.faq.map(({ q, a }) => (
+              <details key={q} className="group">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 text-[1.1rem] font-semibold text-navy [&::-webkit-details-marker]:hidden">
+                  {q}
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white ring-1 ring-line transition-transform duration-300 group-open:rotate-45">
+                    <Plus className="h-4 w-4 text-blue" aria-hidden="true" />
+                  </span>
+                </summary>
+                <p className="max-w-2xl pe-14 pb-6 text-ink-muted">{a}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+
 function Approach() {
   const { t } = useI18n()
   const a = t.home.approach
@@ -242,13 +309,10 @@ function Approach() {
               {a.title}
             </h2>
             <p className="text-lead mt-6 max-w-md text-ink-muted">{a.intro}</p>
-            <img
-              src={images.approche.src}
+            <ResponsiveImage
+              image={images.approche}
               alt={a.imageAlt}
-              width={images.approche.width}
-              height={images.approche.height}
-              loading="lazy"
-              decoding="async"
+              sizes="(min-width: 1024px) 40vw, 100vw"
               className="mt-10 hidden aspect-[5/4] w-full rounded-[var(--radius-frame)] rounded-se-[7rem] bg-mist object-cover lg:block"
             />
           </div>
@@ -290,13 +354,10 @@ function About() {
     <section aria-labelledby="about-title" className="container-page pt-20 md:pt-28">
       <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-7">
-          <img
-            src={images.classe.src}
+          <ResponsiveImage
+            image={images.classe}
             alt={a.imageAlt}
-            width={images.classe.width}
-            height={images.classe.height}
-            loading="lazy"
-            decoding="async"
+            sizes="(min-width: 1024px) 58vw, 100vw"
             className="aspect-[7/5] w-full rounded-[var(--radius-frame)] rounded-es-[7rem] bg-mist object-cover md:aspect-[7/4]"
           />
         </div>

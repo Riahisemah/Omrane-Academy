@@ -9,6 +9,13 @@
 
 # Single-page app: every unknown route is served by index.html.
 # Real files (assets, images, sitemap.xml, robots.txt) are served first.
+# Each page has its own pre-built HTML (dist/<page>/index.html), served as-is.
+# Unknown Arabic URLs start from the Arabic shell, everything else from the French one.
+[[redirects]]
+  from = "/ar/*"
+  to = "/ar/index.html"
+  status = 200
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

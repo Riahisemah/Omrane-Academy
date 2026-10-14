@@ -1,8 +1,10 @@
-import { writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { defineConfig, loadEnv, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import { fr, type Messages } from './src/i18n/messages/fr'
+import { ar } from './src/i18n/messages/ar'
 
 /** Public routes listed in the sitemap. Keep in sync with src/App.tsx. */
 const ROUTES = [
@@ -58,7 +60,67 @@ function seoFiles(siteUrl: string): Plugin {
         resolve(outDir, 'robots.txt'),
         `User-agent: *\nAllow: /\n${base ? `\nSitemap: ${base}/sitemap.xml\n` : ''}`,
       )
+      prerenderHeads(outDir, base)
     },
+  }
+}
+
+/** Title and description of each route, taken from the dictionaries (single source of truth). */
+const PAGE_META: Record<string, (m: Messages) => { title: string; description: string }> = {
+  '/': (m) => ({ title: m.home.seoTitle, description: m.home.seoDescription }),
+  '/programmes': (m) => ({ title: m.programmesPage.seoTitle, description: m.programmesPage.seoDescription }),
+  '/approche': (m) => ({ title: m.approachPage.seoTitle, description: m.approachPage.seoDescription }),
+  '/a-propos': (m) => ({ title: m.aboutPage.seoTitle, description: m.aboutPage.seoDescription }),
+  '/contact': (m) => ({ title: m.contactPage.seoTitle, description: m.contactPage.seoDescription }),
+  '/mentions-legales': (m) => ({ title: m.mentions.seoTitle, description: m.mentions.seoDescription }),
+  '/confidentialite': (m) => ({ title: m.privacy.seoTitle, description: m.privacy.seoDescription }),
+}
+
+const escapeHtml = (value: string) =>
+  value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+
+/**
+ * Writes one HTML file per route and language (dist/programmes/index.html,
+ * dist/ar/programmes/index.html…) with that page's <html lang/dir>, title,
+ * description, Open Graph tags, canonical and hreflang links.
+ * Link previews (WhatsApp, Facebook) and crawlers that do not run JavaScript
+ * then see the right page; the React app takes over as usual in the browser.
+ */
+function prerenderHeads(outDir: string, base: string) {
+  const template = readFileSync(resolve(outDir, 'index.html'), 'utf8')
+  const dictionaries = { fr, ar } satisfies Record<'fr' | 'ar', Messages>
+  const pathFor = (path: string, locale: 'fr' | 'ar') => (locale === 'fr' ? path : `/ar${path === '/' ? '' : path}`)
+
+  for (const locale of ['fr', 'ar'] as const) {
+    const m = dictionaries[locale]
+    for (const path of ROUTES) {
+      const { title, description } = PAGE_META[path](m)
+      const fullTitle = escapeHtml(path === '/' ? title : `${title} | Omrane Academy`)
+      const desc = escapeHtml(description)
+      const url = base ? `${base}${pathFor(path, locale)}` : ''
+      const links = base
+        ? [
+            `<link rel="canonical" href="${url}" />`,
+            `<link rel="alternate" hreflang="fr" href="${base}${pathFor(path, 'fr')}" />`,
+            `<link rel="alternate" hreflang="ar" href="${base}${pathFor(path, 'ar')}" />`,
+            `<link rel="alternate" hreflang="x-default" href="${base}${pathFor(path, 'fr')}" />`,
+          ].join('\n    ')
+        : ''
+
+      const html = template
+        .replace(/<html lang="[^"]*">/, () => `<html lang="${locale}" dir="${m.meta.dir}">`)
+        .replace(/<title>[\s\S]*?<\/title>/, () => `<title>${fullTitle}</title>`)
+        .replace(/(name="description"\s+content=")[^"]*"/, (_, start) => `${start}${desc}"`)
+        .replace(/(property="og:title"\s+content=")[^"]*"/, (_, start) => `${start}${fullTitle}"`)
+        .replace(/(property="og:description"\s+content=")[^"]*"/, (_, start) => `${start}${desc}"`)
+        .replace(/(property="og:locale"\s+content=")[^"]*"/, (_, start) => `${start}${m.meta.ogLocale}"`)
+        .replace(/(property="og:url"\s+content=")[^"]*"/, (_, start) => `${start}${url}"`)
+        .replace('</head>', () => (links ? `  ${links}\n  </head>` : '</head>'))
+
+      const dir = resolve(outDir, `.${pathFor(path, locale)}`)
+      mkdirSync(dir, { recursive: true })
+      writeFileSync(resolve(dir, 'index.html'), html)
+    }
   }
 }
 

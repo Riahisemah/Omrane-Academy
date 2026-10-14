@@ -51,7 +51,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="container-page flex flex-col gap-3 py-6 text-[0.85rem] text-white/55 sm:flex-row sm:items-center sm:justify-between">
+        <div className="container-page flex flex-col gap-3 pt-6 pb-24 text-[0.85rem] sm:pb-6 text-white/55 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {year} {site.name}. {t.footer.photos}{' '}
             <a href="https://unsplash.com" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-white">
