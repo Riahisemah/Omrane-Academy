@@ -1,5 +1,5 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
 import { defineConfig, loadEnv, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -121,9 +121,12 @@ function prerenderHeads(outDir: string, base: string) {
         )
         .replace('</head>', () => (links ? `  ${links}\n  </head>` : '</head>'))
 
-      const dir = resolve(outDir, `.${pathFor(path, locale)}`)
-      mkdirSync(dir, { recursive: true })
-      writeFileSync(resolve(dir, 'index.html'), html)
+      // Flat files (programmes.html, ar/programmes.html): Netlify serves them at /programmes
+      // directly, whereas programmes/index.html triggers a 301 to /programmes/.
+      const localized = pathFor(path, locale)
+      const file = resolve(outDir, localized === '/' ? 'index.html' : `.${localized}.html`)
+      mkdirSync(dirname(file), { recursive: true })
+      writeFileSync(file, html)
     }
   }
 }

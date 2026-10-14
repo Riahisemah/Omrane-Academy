@@ -7,13 +7,26 @@
 [build.environment]
   NODE_VERSION = "22"
 
-# Single-page app: every unknown route is served by index.html.
-# Real files (assets, images, sitemap.xml, robots.txt) are served first.
-# Each page has its own pre-built HTML (dist/<page>/index.html), served as-is.
-# Unknown Arabic URLs start from the Arabic shell, everything else from the French one.
+# Each page has its own pre-built HTML file, served as-is: /programmes → programmes.html,
+# /ar/programmes → ar/programmes.html (Netlify "pretty URLs", no redirect).
+# "/ar" is both a page (ar.html) and a folder, so it is mapped explicitly; without
+# this rule Netlify answers 301 → /ar/.
+[[redirects]]
+  from = "/ar"
+  to = "/ar.html"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/ar/"
+  to = "/ar.html"
+  status = 200
+  force = true
+
+# Unknown URLs: the app takes over (Arabic shell under /ar, French elsewhere).
 [[redirects]]
   from = "/ar/*"
-  to = "/ar/index.html"
+  to = "/ar.html"
   status = 200
 
 [[redirects]]
@@ -36,11 +49,12 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# Images keep a stable name: cache for a week.
+# Images and icons keep a stable name: cache for 30 days, then revalidate in the background.
+# (Replace a photo under a new file name if it must change immediately.)
 [[headers]]
   for = "/images/*"
   [headers.values]
-    Cache-Control = "public, max-age=604800"
+    Cache-Control = "public, max-age=2592000, stale-while-revalidate=86400"
 
 # Netlify serves .webmanifest as octet-stream by default; browsers expect this type.
 [[headers]]
@@ -51,4 +65,4 @@
 [[headers]]
   for = "/icons/*"
   [headers.values]
-    Cache-Control = "public, max-age=604800"
+    Cache-Control = "public, max-age=2592000, stale-while-revalidate=86400"
