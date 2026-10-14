@@ -42,7 +42,7 @@ export default function Approche() {
             <ResponsiveImage
               image={images.approche}
               alt={t.home.approach.imageAlt}
-              sizes="(min-width: 1024px) 40vw, 100vw"
+              sizes="(min-width: 1024px) 40vw, calc(100vw - 2rem)"
               className="frame-arch aspect-[4/5] w-full bg-mist object-cover"
             />
           </div>

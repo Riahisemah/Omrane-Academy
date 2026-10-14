@@ -21,7 +21,7 @@ export default function APropos() {
         <ResponsiveImage
           image={images.classe}
           alt={t.home.about.imageAlt}
-          sizes="(min-width: 1280px) 1168px, 100vw"
+          sizes="(min-width: 1280px) 1168px, calc(100vw - 2rem)"
           eager
           className="aspect-[4/3] w-full rounded-[var(--radius-frame)] bg-mist object-cover sm:aspect-[16/8]"
         />

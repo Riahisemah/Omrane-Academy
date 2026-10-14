@@ -17,24 +17,25 @@ export interface ImageAsset {
 }
 
 export const images = {
-  primaire: { src: '/images/primaire.webp', width: 1100, height: 800, sm: '/images/primaire-sm.webp', smWidth: 640 },
+  // Phone variants are ~768px wide: enough for a 412px screen at 1.75× density.
+  primaire: { src: '/images/primaire.webp', width: 1100, height: 800, sm: '/images/primaire-sm.webp', smWidth: 768 },
   collegeLycee: {
     src: '/images/college-lycee.webp',
     width: 800,
     height: 900,
     sm: '/images/college-lycee-sm.webp',
-    smWidth: 560,
+    smWidth: 720,
   },
-  lycee: { src: '/images/lycee.webp', width: 1000, height: 800, sm: '/images/lycee-sm.webp', smWidth: 640 },
+  lycee: { src: '/images/lycee.webp', width: 1000, height: 800, sm: '/images/lycee-sm.webp', smWidth: 768 },
   informatique: {
     src: '/images/informatique.webp',
     width: 1000,
     height: 750,
     sm: '/images/informatique-sm.webp',
-    smWidth: 640,
+    smWidth: 768,
   },
-  approche: { src: '/images/approche.webp', width: 1000, height: 1100, sm: '/images/approche-sm.webp', smWidth: 600 },
-  classe: { src: '/images/classe.webp', width: 1400, height: 800, sm: '/images/classe-sm.webp', smWidth: 700 },
+  approche: { src: '/images/approche.webp', width: 1000, height: 1100, sm: '/images/approche-sm.webp', smWidth: 700 },
+  classe: { src: '/images/classe.webp', width: 1400, height: 800, sm: '/images/classe-sm.webp', smWidth: 840 },
 } satisfies Record<string, ImageAsset>
 
 export const programs: { id: ServiceId; image: ImageAsset; icon: LucideIcon }[] = [

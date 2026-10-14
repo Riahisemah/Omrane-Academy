@@ -312,7 +312,7 @@ function Approach() {
             <ResponsiveImage
               image={images.approche}
               alt={a.imageAlt}
-              sizes="(min-width: 1024px) 40vw, 100vw"
+              sizes="(min-width: 1024px) 40vw, calc(100vw - 2rem)"
               className="mt-10 hidden aspect-[5/4] w-full rounded-[var(--radius-frame)] rounded-se-[7rem] bg-mist object-cover lg:block"
             />
           </div>
@@ -357,7 +357,7 @@ function About() {
           <ResponsiveImage
             image={images.classe}
             alt={a.imageAlt}
-            sizes="(min-width: 1024px) 58vw, 100vw"
+            sizes="(min-width: 1024px) 58vw, calc(100vw - 2rem)"
             className="aspect-[7/5] w-full rounded-[var(--radius-frame)] rounded-es-[7rem] bg-mist object-cover md:aspect-[7/4]"
           />
         </div>
