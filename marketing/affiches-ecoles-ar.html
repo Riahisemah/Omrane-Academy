@@ -1,0 +1,175 @@
+<!doctype html>
+<!--
+  Affiches A4 noir et blanc (arabe) à afficher dans les écoles — photocopiables.
+  Page 1 : collège (7e, 8e, 9e année de base). Page 2 : primaire.
+  - Impression : navigateur → Imprimer → A4, marges « Aucune », graphiques d’arrière-plan activés.
+  - Une seule page : affiches-ecoles-ar.html#college ou #primaire.
+  Bas de page : languettes à découper avec les numéros.
+  Règle de contenu : factuel uniquement — pas de prix, horaires ou chiffres inventés.
+-->
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <title>Omrane Academy — affiches écoles</title>
+    <link rel="stylesheet" href="brand.css" />
+    <style>
+      @page { size: 210mm 297mm; margin: 0; }
+      html, body { background: #fff; color: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      body.single { overflow: hidden; }
+      body.single .page { display: none; }
+      body.single .page.show { display: flex; }
+
+      .page { width: 210mm; height: 297mm; padding: 9mm; display: flex; flex-direction: column; break-after: page; overflow: hidden; }
+      .page:last-child { break-after: auto; }
+      .frame { flex: 1; display: flex; flex-direction: column; border: 1.6mm solid #000; }
+
+      /* En-tête */
+      .head { display: flex; align-items: center; justify-content: space-between; padding: 5mm 7mm; background: #000; color: #fff; }
+      .brand { display: flex; align-items: center; gap: 3mm; direction: ltr; }
+      .brand svg { width: 13mm; height: 13mm; }
+      .brand b { font-family: 'Jakarta', sans-serif; font-size: 22pt; font-weight: 800; letter-spacing: -0.03em; }
+      .slogan { font-size: 15pt; font-weight: 700; }
+
+      .body { flex: 1; display: flex; flex-direction: column; padding: 7mm 9mm 0; }
+      .kicker { display: inline-block; align-self: flex-start; padding: 1mm 5mm; border: 0.8mm solid #000; border-radius: 99px; font-size: 15pt; font-weight: 700; }
+      h1 { margin-top: 4mm; font-size: 46pt; line-height: 1.2; font-weight: 800; }
+      .lead { margin-top: 2mm; font-size: 15pt; line-height: 1.6; font-weight: 500; }
+
+      /* Niveaux */
+      .levels { margin-top: 6mm; display: flex; gap: 4mm; }
+      .lv { flex: 1; border: 0.9mm solid #000; border-radius: 4mm; padding: 2.5mm 0 3mm; text-align: center; }
+      .lv b { display: block; font-family: 'Jakarta', sans-serif; font-size: 50pt; line-height: 1.05; font-weight: 800; }
+      .lv span { display: block; font-size: 14pt; font-weight: 700; }
+      .lv.dark { background: #000; color: #fff; }
+      .levels.six .lv b { font-size: 34pt; }
+      .levels.six .lv span { font-size: 11pt; }
+
+      /* Objectifs */
+      .aims { margin-top: 6mm; list-style: none; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 3mm 6mm; }
+      .aims li { display: flex; gap: 3mm; align-items: center; font-size: 14.5pt; line-height: 1.35; font-weight: 600; }
+      .aims li::before { content: '✓'; flex: none; display: grid; place-items: center; width: 7mm; height: 7mm; border: 0.7mm solid #000; border-radius: 1.5mm; font-family: 'Jakarta', sans-serif; font-size: 12pt; font-weight: 800; }
+
+      .quote { margin-top: 6mm; padding: 3mm 0; border-block: 0.5mm solid #000; text-align: center; font-size: 18pt; font-weight: 700; }
+
+      /* Contact */
+      .contact { margin-top: auto; margin-bottom: 6mm; display: flex; gap: 6mm; align-items: stretch; }
+      .info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+      .info .label { font-size: 15pt; font-weight: 700; }
+      .phones { margin-top: 2mm; display: flex; flex-direction: column; gap: 1.5mm; }
+      .phone { display: flex; align-items: center; gap: 3mm; }
+      .phone .num { direction: ltr; unicode-bidi: isolate; font-family: 'Jakarta', sans-serif; font-size: 30pt; line-height: 1.1; font-weight: 800; letter-spacing: -0.01em; }
+      .phone .tag { padding: 0.5mm 2.5mm; border: 0.5mm solid #000; border-radius: 1.5mm; font-size: 10.5pt; font-weight: 700; }
+      .place { margin-top: 3mm; display: flex; align-items: center; gap: 2mm; font-size: 15pt; font-weight: 700; }
+      .place svg { width: 7mm; height: 7mm; flex: none; }
+      .qr { width: 46mm; flex: none; text-align: center; border: 0.6mm solid #000; border-radius: 3mm; padding: 2.5mm; }
+      .qr img { display: block; width: 100%; }
+      .qr span { display: block; margin-top: 1mm; font-size: 10.5pt; line-height: 1.4; font-weight: 600; }
+
+      /* Languettes à détacher */
+      .tabs { display: flex; height: 44mm; border-top: 0.6mm dashed #000; position: relative; }
+      .tabs::before { content: '✂'; position: absolute; top: -4.2mm; inset-inline-start: 4mm; background: #fff; padding: 0 1mm; font-size: 14pt; line-height: 1; }
+      .tab { flex: 1; display: flex; align-items: center; justify-content: center; border-inline-end: 0.4mm dashed #000; }
+      .tab:last-child { border-inline-end: 0; }
+      .tab div { writing-mode: vertical-rl; transform: rotate(180deg); direction: ltr; text-align: center; font-family: 'Jakarta', sans-serif; line-height: 1.25; }
+      .tab b { display: block; font-size: 9pt; font-weight: 800; }
+      .tab span { display: block; font-size: 10.5pt; font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <template id="head">
+      <div class="head">
+        <div class="brand">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 28V14a9 9 0 0 1 18 0v14" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" /><path d="M11.5 28c0-6.5 9-6 9-13" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" /></svg>
+          <b>Omrane Academy</b>
+        </div>
+        <p class="slogan">الطريق نحو النجاح</p>
+      </div>
+    </template>
+    <template id="contact">
+      <div class="contact">
+        <div class="info">
+          <p class="label">للاستعلام والتسجيل المسبق:</p>
+          <div class="phones">
+            <div class="phone"><span class="num">26 653 690</span><span class="tag">هاتف · واتساب</span></div>
+            <div class="phone"><span class="num">22 511 065</span><span class="tag">هاتف</span></div>
+          </div>
+          <p class="place">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg>
+            العمران الأعلى، تونس
+          </p>
+        </div>
+        <div class="qr">
+          <img src="qr/qr-whatsapp-ar-bw.svg" alt="" />
+          <span>امسحوا الرمز لمراسلتنا على واتساب</span>
+        </div>
+      </div>
+      <div class="tabs"></div>
+    </template>
+
+    <!-- ============ الإعدادي : 7 · 8 · 9 ============ -->
+    <section class="page" id="college">
+      <div class="frame">
+        <div data-use="head"></div>
+        <div class="body">
+          <p class="kicker">دعم مدرسي</p>
+          <h1>تلاميذ الإعدادي</h1>
+          <p class="lead">مرافقة لتعزيز المكتسبات وفهم الدروس بشكل أفضل والاستعداد للفروض بثقة أكبر.</p>
+          <div class="levels">
+            <div class="lv"><b>7</b><span>السابعة أساسي</span></div>
+            <div class="lv"><b>8</b><span>الثامنة أساسي</span></div>
+            <div class="lv"><b>9</b><span>التاسعة أساسي</span></div>
+          </div>
+          <ul class="aims">
+            <li>توضيح ما بقي غامضًا من الدروس</li>
+            <li>تدارك النقائص تدريجيًا</li>
+            <li>تعلّم التنظيم وطرق المراجعة</li>
+            <li>الاستعداد للفروض بهدوء</li>
+          </ul>
+          <p class="quote">كلّ تلميذ قادر على النجاح.</p>
+          <div data-use="contact"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ الابتدائي ============ -->
+    <section class="page" id="primaire">
+      <div class="frame">
+        <div data-use="head"></div>
+        <div class="body">
+          <p class="kicker">دعم مدرسي</p>
+          <h1>تلاميذ الابتدائي</h1>
+          <p class="lead">مرافقة الأطفال في تعلّم الأساسيات ومساعدتهم على بناء قاعدة متينة.</p>
+          <div class="levels six">
+            <div class="lv"><b>1</b><span>الأولى</span></div>
+            <div class="lv"><b>2</b><span>الثانية</span></div>
+            <div class="lv"><b>3</b><span>الثالثة</span></div>
+            <div class="lv"><b>4</b><span>الرابعة</span></div>
+            <div class="lv"><b>5</b><span>الخامسة</span></div>
+            <div class="lv"><b>6</b><span>السادسة</span></div>
+          </div>
+          <ul class="aims">
+            <li>مراجعة ما دُرس في القسم بهدوء</li>
+            <li>تثبيت الأساسيات خطوة بخطوة</li>
+            <li>اكتساب عادات عمل جيّدة</li>
+            <li>كسب الثقة في حلّ التمارين</li>
+          </ul>
+          <p class="quote">كلّ تلميذ قادر على النجاح.</p>
+          <div data-use="contact"></div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      document.querySelectorAll('[data-use]').forEach((slot) => {
+        slot.replaceWith(document.getElementById(slot.dataset.use).content.cloneNode(true))
+      })
+      const tab = '<div class="tab"><div><b>Omrane Academy</b><span>26 653 690</span><span>22 511 065</span></div></div>'
+      document.querySelectorAll('.tabs').forEach((t) => (t.innerHTML = tab.repeat(9)))
+      const only = location.hash.slice(1)
+      if (only === 'college' || only === 'primaire') {
+        document.body.classList.add('single')
+        document.getElementById(only).classList.add('show')
+      }
+    </script>
+  </body>
+</html>
