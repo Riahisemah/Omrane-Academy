@@ -1,9 +1,9 @@
 <!doctype html>
 <!--
   Affiches A4 noir et blanc (arabe) à afficher dans les écoles — photocopiables.
-  Page 1 : collège (7e, 8e, 9e année de base). Page 2 : primaire.
+  Page 1 : collège (7e, 8e, 9e année de base). Page 2 : primaire. Page 3 : lycée (1re, 2e, 3e année secondaire).
   - Impression : navigateur → Imprimer → A4, marges « Aucune », graphiques d’arrière-plan activés.
-  - Une seule page : affiches-ecoles-ar.html#college ou #primaire.
+  - Une seule page : affiches-ecoles-ar.html#college, #primaire ou #lycee.
   Bas de page : languettes à découper avec les numéros.
   Règle de contenu : factuel uniquement — pas de prix, horaires ou chiffres inventés.
 -->
@@ -159,6 +159,31 @@
       </div>
     </section>
 
+    <!-- ============ الثانوي : 1 · 2 · 3 ============ -->
+    <section class="page" id="lycee">
+      <div class="frame">
+        <div data-use="head"></div>
+        <div class="body">
+          <p class="kicker">دعم مدرسي</p>
+          <h1>تلاميذ الثانوي</h1>
+          <p class="lead">تعميق المفاهيم، واكتساب المنهجية، ومواجهة المحطّات المهمّة بمزيد من الطمأنينة.</p>
+          <div class="levels">
+            <div class="lv"><b>1</b><span>الأولى ثانوي</span></div>
+            <div class="lv"><b>2</b><span>الثانية ثانوي</span></div>
+            <div class="lv"><b>3</b><span>الثالثة ثانوي</span></div>
+          </div>
+          <ul class="aims">
+            <li>تعميق فهم المفاهيم</li>
+            <li>العمل على المنهجية والدقّة</li>
+            <li>تنظيم المراجعة على المدى الطويل</li>
+            <li>خوض الامتحانات بثقة أكبر</li>
+          </ul>
+          <p class="quote">كلّ تلميذ قادر على النجاح.</p>
+          <div data-use="contact"></div>
+        </div>
+      </div>
+    </section>
+
     <script>
       document.querySelectorAll('[data-use]').forEach((slot) => {
         slot.replaceWith(document.getElementById(slot.dataset.use).content.cloneNode(true))
@@ -166,7 +191,7 @@
       const tab = '<div class="tab"><div><b>Omrane Academy</b><span>26 653 690</span><span>22 511 065</span></div></div>'
       document.querySelectorAll('.tabs').forEach((t) => (t.innerHTML = tab.repeat(9)))
       const only = location.hash.slice(1)
-      if (only === 'college' || only === 'primaire') {
+      if (['college', 'primaire', 'lycee'].includes(only)) {
         document.body.classList.add('single')
         document.getElementById(only).classList.add('show')
       }
