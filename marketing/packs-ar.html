@@ -1,7 +1,8 @@
 <!doctype html>
 <!--
   Publicités Facebook « packs » (1080 × 1350 px, 4:5), en arabe.
-  Une image par ancre : #primaire, #college, #info (informatique pour lycéens), #tous (récapitulatif).
+  Une image par ancre : #primaire, #college, #info (informatique pour lycéens), #tous (récapitulatif),
+  #matieres (4 matières, la 4e gratuite), #offre (première séance gratuite — offre confirmée par l'utilisateur le 2026-11-11).
   Export : Chrome headless --window-size=1080,1350 --screenshot "packs-ar.html#primaire" …
   Pas de prix : ils ne sont pas encore fixés → « اتصلوا بنا للأسعار ». Ne rien inventer
   (nombre de séances, matières, taille des groupes) tant que ce n'est pas confirmé.
@@ -71,6 +72,31 @@
       .row.p em { background: var(--gold); color: var(--navy); }
       .row.c em { background: var(--blue); color: #fff; }
       .row.i em { background: var(--green); color: #fff; }
+
+      /* Badge « première séance gratuite » */
+      .free { position: absolute; top: 405px; left: 36px; z-index: 2; width: 210px; height: 210px; border-radius: 50%; display: grid; place-content: center; text-align: center; background: var(--gold); color: var(--navy); border: 8px solid #fff; box-shadow: 0 20px 40px -16px rgb(0 0 0 / 0.55); transform: rotate(-10deg); }
+      .free b { display: block; font-size: 30px; line-height: 1.2; font-weight: 700; }
+      .free span { display: block; font-size: 44px; line-height: 1.2; font-weight: 800; }
+      #tous .free { top: 40px; left: 72px; width: 190px; height: 190px; }
+      #tous .free b { font-size: 27px; }
+      #tous .free span { font-size: 40px; }
+
+      /* Image dédiée à l'offre */
+      .offer .top { height: 1050px; text-align: center; }
+      .offer .gift { position: absolute; top: 190px; left: 50%; z-index: 1; width: 200px; height: 200px; margin-left: -100px; border-radius: 50%; display: grid; place-items: center; background: var(--gold); box-shadow: 0 0 0 22px rgb(244 185 66 / 0.3); }
+      .offer .gift svg { width: 110px; height: 110px; }
+      .offer .kick { position: absolute; top: 440px; inset-inline: 0; z-index: 1; font-size: 36px; font-weight: 700; color: rgb(255 255 255 / 0.8); }
+      .offer .big { position: absolute; top: 500px; inset-inline: 0; z-index: 1; font-size: 120px; line-height: 1.15; font-weight: 800; }
+      .offer .big em { display: block; font-style: normal; color: var(--gold); font-size: 150px; }
+      .offer .tags { position: absolute; top: 880px; inset-inline: 72px; z-index: 1; display: flex; justify-content: center; gap: 16px; }
+      .offer .tags span { padding: 12px 26px; border-radius: 99px; border: 2px solid rgb(255 255 255 / 0.35); font-size: 30px; font-weight: 700; }
+      .offer .cta { height: 300px; }
+      .offer .subjects { position: absolute; top: 180px; inset-inline: 0; z-index: 1; display: flex; justify-content: center; gap: 22px; direction: ltr; }
+      .offer .subjects i { font-style: normal; display: grid; place-items: center; width: 150px; height: 170px; border-radius: 28px; background: #fff; color: var(--navy); font-family: 'Jakarta', sans-serif; font-size: 80px; font-weight: 800; }
+      .offer .subjects i.gift4 { background: var(--gold); position: relative; }
+      .offer .subjects i.gift4 small { position: absolute; bottom: -22px; padding: 4px 18px; border-radius: 99px; background: #fff; color: var(--navy); font-family: 'PlexArabic', sans-serif; font-size: 28px; font-weight: 800; box-shadow: 0 8px 20px -8px rgb(0 0 0 / 0.5); }
+      .offer .big.two { font-size: 96px; }
+      .offer .big.two em { font-size: 110px; }
     </style>
   </head>
   <body>
@@ -79,6 +105,9 @@
         <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 28V14a9 9 0 0 1 18 0v14" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" /><path d="M11.5 28c0-6.5 9-6 9-13" fill="none" stroke="#F4B942" stroke-width="2.6" stroke-linecap="round" /></svg>
         <b>Omrane Academy</b>
       </div>
+    </template>
+    <template id="free">
+      <div class="free"><b>الحصّة الأولى</b><span>مجّانية</span></div>
     </template>
     <template id="cta">
       <div class="cta">
@@ -104,6 +133,7 @@
       <div class="top">
         <div data-use="brand"></div>
         <div class="photo"><img class="arch" src="../public/images/primaire.webp" alt="" /></div>
+        <div data-use="free"></div>
         <p class="badge">باقة الابتدائي</p>
         <p class="title">دعم مدرسي</p>
         <p class="for">لبناء قاعدة متينة منذ السنوات الأولى</p>
@@ -126,6 +156,7 @@
       <div class="top">
         <div data-use="brand"></div>
         <div class="photo"><img class="arch" src="../public/images/college-lycee.webp" alt="" /></div>
+        <div data-use="free"></div>
         <p class="badge">باقة الإعدادي</p>
         <p class="title">دعم مدرسي</p>
         <p class="for">لفهم الدروس والاستعداد للفروض بثقة</p>
@@ -148,6 +179,7 @@
       <div class="top">
         <div data-use="brand"></div>
         <div class="photo"><img class="arch" src="../public/images/informatique.webp" alt="" style="object-position: 70% center" /></div>
+        <div data-use="free"></div>
         <p class="badge">باقة الإعلامية</p>
         <p class="title">للثانوي</p>
         <p class="for">لاكتساب مهارات رقمية تنفعك اليوم وغدًا</p>
@@ -169,6 +201,7 @@
     <section class="ad" id="tous">
       <div class="top">
         <div data-use="brand"></div>
+        <div data-use="free"></div>
         <p class="badge">باقاتنا</p>
         <p class="title">اختاروا الباقة المناسبة لابنكم</p>
       </div>
@@ -180,10 +213,35 @@
       <div data-use="cta"></div>
     </section>
 
+    <!-- ============ عرض: الحصّة الأولى مجّانية ============ -->
+    <section class="ad offer" id="offre" data-ask="احجزوا حصّتكم المجّانية الآن">
+      <div class="top">
+        <div data-use="brand"></div>
+        <div class="gift"><svg viewBox="0 0 24 24" fill="none" stroke="#142B4A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1" /><path d="M12 8v13" /><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7" /><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5" /></svg></div>
+        <p class="kick">عرض خاص · جرّبوا قبل التسجيل</p>
+        <p class="big">الحصّة الأولى<em>مجّانية</em></p>
+        <div class="tags"><span>الابتدائي</span><span>الإعدادي</span><span>الإعلامية للثانوي</span></div>
+      </div>
+      <div data-use="cta"></div>
+    </section>
+
+    <!-- ============ عرض: 4 مواد، الرابعة مجّانية (offre confirmée par l'utilisateur le 2026-11-11) ============ -->
+    <section class="ad offer" id="matieres" data-ask="اتصلوا بنا لمعرفة التفاصيل">
+      <div class="top">
+        <div data-use="brand"></div>
+        <div class="subjects"><i>1</i><i>2</i><i>3</i><i class="gift4">4<small>مجّانًا</small></i></div>
+        <p class="kick">عرض خاص · دعم مدرسي</p>
+        <p class="big two">سجّلوا في 4 مواد<em>والرابعة مجّانية</em></p>
+        <div class="tags"><span>الابتدائي</span><span>الإعدادي <bdi dir="ltr">7 · 8 · 9</bdi></span></div>
+      </div>
+      <div data-use="cta"></div>
+    </section>
+
     <script>
       document.querySelectorAll('[data-use]').forEach((slot) => {
         slot.replaceWith(document.getElementById(slot.dataset.use).content.cloneNode(true))
       })
+      document.querySelectorAll('[data-ask]').forEach((a) => (a.querySelector('.ask p').textContent = a.dataset.ask))
       const id = location.hash.slice(1) || 'primaire'
       ;(document.getElementById(id) || document.getElementById('primaire')).classList.add('show')
     </script>
