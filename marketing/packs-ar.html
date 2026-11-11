@@ -1,0 +1,191 @@
+<!doctype html>
+<!--
+  Publicités Facebook « packs » (1080 × 1350 px, 4:5), en arabe.
+  Une image par ancre : #primaire, #college, #info (informatique pour lycéens), #tous (récapitulatif).
+  Export : Chrome headless --window-size=1080,1350 --screenshot "packs-ar.html#primaire" …
+  Pas de prix : ils ne sont pas encore fixés → « اتصلوا بنا للأسعار ». Ne rien inventer
+  (nombre de séances, matières, taille des groupes) tant que ce n'est pas confirmé.
+-->
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <title>Omrane Academy — packs</title>
+    <link rel="stylesheet" href="brand.css" />
+    <style>
+      html, body { width: 1080px; height: 1350px; overflow: hidden; background: #fff; }
+      body::-webkit-scrollbar { display: none; }
+      .ad { display: none; position: relative; width: 1080px; height: 1350px; overflow: hidden; background: var(--paper); }
+      .ad.show { display: block; }
+      #primaire { --acc: var(--gold); --on-acc: var(--navy); --soft: #fdf3dc; }
+      #college { --acc: var(--blue); --on-acc: #fff; --soft: #e3eefb; }
+      #info { --acc: var(--green); --on-acc: #fff; --soft: #dff2e9; }
+      #tous { --acc: var(--gold); --on-acc: var(--navy); }
+
+      /* Bandeau haut */
+      .top { position: absolute; inset: 0 0 auto 0; height: 640px; background: var(--navy); color: #fff; overflow: hidden; }
+      .top::after { content: ''; position: absolute; width: 760px; height: 760px; border-radius: 50%; left: -300px; bottom: -420px; background: radial-gradient(circle, color-mix(in srgb, var(--acc) 28%, transparent), transparent 65%); }
+      .brand { position: absolute; top: 60px; right: 72px; display: flex; align-items: center; gap: 16px; direction: ltr; z-index: 1; }
+      .brand svg { width: 56px; height: 56px; }
+      .brand b { font-family: 'Jakarta', sans-serif; font-size: 40px; font-weight: 800; letter-spacing: -0.03em; }
+      .photo { position: absolute; top: 60px; left: 72px; width: 380px; height: 520px; z-index: 1; }
+      .photo img { width: 100%; height: 100%; border: 10px solid #fff; }
+
+      .badge { position: absolute; top: 190px; right: 72px; padding: 8px 28px; border-radius: 99px; background: var(--acc); color: var(--on-acc); font-size: 34px; font-weight: 700; z-index: 1; }
+      .title { position: absolute; top: 262px; right: 72px; width: 540px; font-size: 96px; line-height: 1.2; font-weight: 800; z-index: 1; }
+      .for { position: absolute; top: 400px; right: 72px; width: 540px; font-size: 32px; line-height: 1.5; color: rgb(255 255 255 / 0.8); z-index: 1; }
+      .chips { position: absolute; top: 480px; right: 72px; display: flex; gap: 12px; z-index: 1; }
+      .chips i { font-style: normal; display: grid; place-items: center; min-width: 66px; height: 66px; padding: 0 14px; border-radius: 18px; background: #fff; color: var(--navy); font-family: 'Jakarta', sans-serif; font-size: 36px; font-weight: 800; }
+      .chips i.w { font-family: 'PlexArabic', sans-serif; font-size: 28px; font-weight: 700; }
+
+      /* Contenu du pack */
+      .inc { position: absolute; top: 690px; inset-inline: 72px; }
+      .inc h2 { font-size: 36px; font-weight: 700; color: var(--navy); }
+      .inc ul { list-style: none; padding: 0; margin-top: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+      .inc li { display: flex; align-items: center; gap: 18px; min-height: 104px; padding: 18px 22px; border-radius: 24px; background: #fff; border: 2px solid var(--line); font-size: 30px; line-height: 1.4; font-weight: 600; color: var(--ink); }
+      .inc li::before { content: '✓'; flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--acc); color: var(--on-acc); font-family: 'Jakarta', sans-serif; font-size: 28px; font-weight: 800; }
+
+      /* Appel à l'action */
+      .cta { position: absolute; bottom: 0; inset-inline: 0; height: 300px; background: #fff; border-top: 2px solid var(--line); padding: 34px 72px 0; }
+      .cta .ask { display: flex; align-items: center; justify-content: space-between; }
+      .cta .ask p { font-size: 38px; font-weight: 800; color: var(--navy); }
+      .cta .ask span { font-size: 28px; font-weight: 700; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+      .cta .ask svg { width: 36px; height: 36px; }
+      .phones { margin-top: 22px; display: flex; gap: 24px; }
+      .phone { flex: 1; display: flex; align-items: center; gap: 16px; padding: 16px 24px; border-radius: 24px; border: 3px solid var(--line); color: var(--navy); }
+      .phone.wa { background: var(--green); border-color: var(--green); color: #fff; }
+      .phone svg { width: 48px; height: 48px; flex: none; }
+      .phone small { display: block; font-size: 22px; font-weight: 600; opacity: 0.85; }
+      .phone .num { direction: ltr; unicode-bidi: isolate; font-family: 'Jakarta', sans-serif; font-size: 48px; font-weight: 800; }
+
+      /* Récapitulatif */
+      #tous .top { height: 360px; }
+      #tous .badge { top: 148px; }
+      #tous .title { top: 230px; width: 900px; font-size: 64px; }
+      .list { position: absolute; top: 400px; inset-inline: 72px; display: flex; flex-direction: column; gap: 22px; }
+      .row { display: flex; align-items: center; gap: 28px; height: 196px; padding: 18px; padding-inline-end: 30px; border-radius: 30px; background: #fff; border: 2px solid var(--line); }
+      .row img { width: 200px; height: 160px; object-fit: cover; border-radius: 20px; flex: none; }
+      .row .txt { flex: 1; }
+      .row b { display: block; font-size: 42px; font-weight: 800; color: var(--navy); }
+      .row span { display: block; margin-top: 4px; font-size: 26px; color: var(--muted); }
+      .row em { direction: ltr; unicode-bidi: isolate; font-style: normal; flex: none; padding: 10px 22px; border-radius: 99px; font-family: 'Jakarta', sans-serif; font-size: 30px; font-weight: 800; }
+      .row.p em { background: var(--gold); color: var(--navy); }
+      .row.c em { background: var(--blue); color: #fff; }
+      .row.i em { background: var(--green); color: #fff; }
+    </style>
+  </head>
+  <body>
+    <template id="brand">
+      <div class="brand">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 28V14a9 9 0 0 1 18 0v14" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" /><path d="M11.5 28c0-6.5 9-6 9-13" fill="none" stroke="#F4B942" stroke-width="2.6" stroke-linecap="round" /></svg>
+        <b>Omrane Academy</b>
+      </div>
+    </template>
+    <template id="cta">
+      <div class="cta">
+        <div class="ask">
+          <p>الأسعار والتفاصيل؟ اتصلوا بنا</p>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="#2878D0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" /><circle cx="12" cy="10" r="3" /></svg>العمران الأعلى، تونس</span>
+        </div>
+        <div class="phones">
+          <div class="phone wa">
+            <svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-3.3-.8-2.8-1.1-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.6-.3.3c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.7-.1l.9-1.1c.2-.3.4-.2.7-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.2 1.2z" /></svg>
+            <div><small>هاتف · واتساب</small><span class="num">26 653 690</span></div>
+          </div>
+          <div class="phone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#142B4A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" /></svg>
+            <div><small>هاتف</small><span class="num">22 511 065</span></div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- ============ باقة الابتدائي ============ -->
+    <section class="ad" id="primaire">
+      <div class="top">
+        <div data-use="brand"></div>
+        <div class="photo"><img class="arch" src="../public/images/primaire.webp" alt="" /></div>
+        <p class="badge">باقة الابتدائي</p>
+        <p class="title">دعم مدرسي</p>
+        <p class="for">لبناء قاعدة متينة منذ السنوات الأولى</p>
+        <div class="chips"><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i></div>
+      </div>
+      <div class="inc">
+        <h2>ماذا تتضمّن الباقة؟</h2>
+        <ul>
+          <li>مراجعة ما دُرس في القسم بهدوء</li>
+          <li>تثبيت الأساسيات خطوة بخطوة</li>
+          <li>اكتساب عادات عمل جيّدة</li>
+          <li>كسب الثقة في حلّ التمارين</li>
+        </ul>
+      </div>
+      <div data-use="cta"></div>
+    </section>
+
+    <!-- ============ باقة الإعدادي ============ -->
+    <section class="ad" id="college">
+      <div class="top">
+        <div data-use="brand"></div>
+        <div class="photo"><img class="arch" src="../public/images/college-lycee.webp" alt="" /></div>
+        <p class="badge">باقة الإعدادي</p>
+        <p class="title">دعم مدرسي</p>
+        <p class="for">لفهم الدروس والاستعداد للفروض بثقة</p>
+        <div class="chips"><i>7</i><i>8</i><i>9</i><i class="w">أساسي</i></div>
+      </div>
+      <div class="inc">
+        <h2>ماذا تتضمّن الباقة؟</h2>
+        <ul>
+          <li>توضيح ما بقي غامضًا من الدروس</li>
+          <li>تدارك النقائص تدريجيًا</li>
+          <li>تعلّم التنظيم وطرق المراجعة</li>
+          <li>الاستعداد للفروض بهدوء</li>
+        </ul>
+      </div>
+      <div data-use="cta"></div>
+    </section>
+
+    <!-- ============ باقة الإعلامية (الثانوي) ============ -->
+    <section class="ad" id="info">
+      <div class="top">
+        <div data-use="brand"></div>
+        <div class="photo"><img class="arch" src="../public/images/informatique.webp" alt="" style="object-position: 70% center" /></div>
+        <p class="badge">باقة الإعلامية</p>
+        <p class="title">للثانوي</p>
+        <p class="for">لاكتساب مهارات رقمية تنفعك اليوم وغدًا</p>
+        <div class="chips"><i>1</i><i>2</i><i>3</i><i class="w">ثانوي</i></div>
+      </div>
+      <div class="inc">
+        <h2>ماذا تتضمّن الباقة؟</h2>
+        <ul>
+          <li>التحكّم في الحاسوب وأدواته</li>
+          <li>فهم المفاهيم الأساسية للإعلامية</li>
+          <li>عادات سليمة للاستعمال الآمن</li>
+          <li>الاستقلالية في استعمال الأدوات الرقمية</li>
+        </ul>
+      </div>
+      <div data-use="cta"></div>
+    </section>
+
+    <!-- ============ كلّ الباقات ============ -->
+    <section class="ad" id="tous">
+      <div class="top">
+        <div data-use="brand"></div>
+        <p class="badge">باقاتنا</p>
+        <p class="title">اختاروا الباقة المناسبة لابنكم</p>
+      </div>
+      <div class="list">
+        <div class="row p"><img src="../public/images/primaire-sm.webp" alt="" /><div class="txt"><b>باقة الابتدائي</b><span>دعم مدرسي · بناء قاعدة متينة</span></div><em>1 → 6</em></div>
+        <div class="row c"><img src="../public/images/college-lycee-sm.webp" alt="" style="object-position: center 25%" /><div class="txt"><b>باقة الإعدادي</b><span>دعم مدرسي · فهم الدروس بشكل أفضل</span></div><em>7 · 8 · 9</em></div>
+        <div class="row i"><img src="../public/images/informatique-sm.webp" alt="" /><div class="txt"><b>باقة الإعلامية للثانوي</b><span>مهارات رقمية · الاستعمال الآمن</span></div><em>1 · 2 · 3</em></div>
+      </div>
+      <div data-use="cta"></div>
+    </section>
+
+    <script>
+      document.querySelectorAll('[data-use]').forEach((slot) => {
+        slot.replaceWith(document.getElementById(slot.dataset.use).content.cloneNode(true))
+      })
+      const id = location.hash.slice(1) || 'primaire'
+      ;(document.getElementById(id) || document.getElementById('primaire')).classList.add('show')
+    </script>
+  </body>
+</html>
